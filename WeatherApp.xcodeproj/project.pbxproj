@@ -12,10 +12,10 @@
 		77D4BB752BE2829B00056404 /* WeatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB742BE2829B00056404 /* WeatherViewController.swift */; };
 		77D4BB7A2BE2829D00056404 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 77D4BB792BE2829D00056404 /* Assets.xcassets */; };
 		77D4BB7D2BE2829D00056404 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 77D4BB7C2BE2829D00056404 /* Base */; };
-		77D4BB872BE2852F00056404 /* TitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB862BE2852F00056404 /* TitleView.swift */; };
 		77D4BB892BE28D1000056404 /* DayTempLimitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB882BE28D1000056404 /* DayTempLimitsView.swift */; };
-		77D4BB8B2BE29CE200056404 /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB8A2BE29CE200056404 /* BottomBarView.swift */; };
 		77D4BB8F2BE2AB5A00056404 /* HourlyWeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB8E2BE2AB5A00056404 /* HourlyWeatherView.swift */; };
+		77D4BB922BE2DFF300056404 /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB902BE2DFF300056404 /* BottomBarView.swift */; };
+		77D4BB932BE2DFF300056404 /* TitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB912BE2DFF300056404 /* TitleView.swift */; };
 		F1240E0BF8C2EFD7551A312D /* Pods_WeatherApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91A3E76353F1A2732D93085D /* Pods_WeatherApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -29,10 +29,10 @@
 		77D4BB792BE2829D00056404 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		77D4BB7C2BE2829D00056404 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		77D4BB7E2BE2829D00056404 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		77D4BB862BE2852F00056404 /* TitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TitleView.swift; path = ../../../../../Downloads/TitleView.swift; sourceTree = "<group>"; };
 		77D4BB882BE28D1000056404 /* DayTempLimitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayTempLimitsView.swift; sourceTree = "<group>"; };
-		77D4BB8A2BE29CE200056404 /* BottomBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BottomBarView.swift; path = ../../../../../Downloads/BottomBarView.swift; sourceTree = "<group>"; };
 		77D4BB8E2BE2AB5A00056404 /* HourlyWeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWeatherView.swift; sourceTree = "<group>"; };
+		77D4BB902BE2DFF300056404 /* BottomBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomBarView.swift; sourceTree = "<group>"; };
+		77D4BB912BE2DFF300056404 /* TitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleView.swift; sourceTree = "<group>"; };
 		91A3E76353F1A2732D93085D /* Pods_WeatherApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WeatherApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -100,9 +100,9 @@
 		77D4BB852BE2849600056404 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				77D4BB862BE2852F00056404 /* TitleView.swift */,
+				77D4BB902BE2DFF300056404 /* BottomBarView.swift */,
+				77D4BB912BE2DFF300056404 /* TitleView.swift */,
 				77D4BB882BE28D1000056404 /* DayTempLimitsView.swift */,
-				77D4BB8A2BE29CE200056404 /* BottomBarView.swift */,
 				77D4BB8E2BE2AB5A00056404 /* HourlyWeatherView.swift */,
 			);
 			path = Views;
@@ -233,10 +233,10 @@
 				77D4BB8F2BE2AB5A00056404 /* HourlyWeatherView.swift in Sources */,
 				77D4BB752BE2829B00056404 /* WeatherViewController.swift in Sources */,
 				77D4BB712BE2829B00056404 /* AppDelegate.swift in Sources */,
+				77D4BB932BE2DFF300056404 /* TitleView.swift in Sources */,
+				77D4BB922BE2DFF300056404 /* BottomBarView.swift in Sources */,
 				77D4BB732BE2829B00056404 /* SceneDelegate.swift in Sources */,
-				77D4BB8B2BE29CE200056404 /* BottomBarView.swift in Sources */,
 				77D4BB892BE28D1000056404 /* DayTempLimitsView.swift in Sources */,
-				77D4BB872BE2852F00056404 /* TitleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
