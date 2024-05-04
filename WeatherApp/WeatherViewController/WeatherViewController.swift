@@ -15,8 +15,8 @@ final class WeatherViewController: BaseViewController {
     private let bottomBarView = BottomBarView()
 
     private let temporaryContentView = UIView()
-    private let dayTempLimitsView = DayTempLimitsView()
-    private let hourlyWeaterView = HourlyWeatherView()
+    private let dayWeatherView = DayWeatherView()
+    private let hourlyWeaterView = DayHourlyWeatherView()
 
     override func setup() {
         super.setup()
@@ -29,7 +29,7 @@ final class WeatherViewController: BaseViewController {
         setupBottomBarView()
 
         setupTemporaryContentView()
-        setupDayTempView()
+        setupDayWeatherView()
         setupDayWeaterView()
     }
 
@@ -93,20 +93,21 @@ final class WeatherViewController: BaseViewController {
         }
     }
 
-    private func setupDayTempView() {
-        temporaryContentView.addSubview(dayTempLimitsView)
+    private func setupDayWeatherView() {
+        temporaryContentView.addSubview(dayWeatherView)
 
-        dayTempLimitsView.setup(
-            DayTempLimitsView.InputModel(minWeekTemp: 13,
-                                         maxWeekTemp: 25,
-                                         minDayTemp: 15,
-                                         maxDayTemp: 22,
-                                         currentTemt: 16)
+        dayWeatherView.setup(
+            DayWeatherView.InputModel(title: "Now",
+                                      image: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
+                                      minTemp: 13,
+                                      maxTemp: 25,
+                                      minDayTemp: 15,
+                                      maxDayTemp: 22,
+                                      currentTemt: 16)
         )
 
-        dayTempLimitsView.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().inset(16)
-            make.width.equalTo(200)
+        dayWeatherView.snp.makeConstraints { make in
+            make.top.horizontalEdges.equalToSuperview().inset(16)
         }
     }
 
@@ -115,38 +116,38 @@ final class WeatherViewController: BaseViewController {
 
         hourlyWeaterView.setup(
             [
-                HourlyWeatherView.InputModel(hour: "Now",
+                DayHourlyWeatherView.InputModel(hour: "Now",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "12",
+                DayHourlyWeatherView.InputModel(hour: "12",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "13",
+                DayHourlyWeatherView.InputModel(hour: "13",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "14",
+                DayHourlyWeatherView.InputModel(hour: "14",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "15",
+                DayHourlyWeatherView.InputModel(hour: "15",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "16",
+                DayHourlyWeatherView.InputModel(hour: "16",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "17",
+                DayHourlyWeatherView.InputModel(hour: "17",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "18",
+                DayHourlyWeatherView.InputModel(hour: "18",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "19",
+                DayHourlyWeatherView.InputModel(hour: "19",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
             ]
         )
 
         hourlyWeaterView.snp.makeConstraints { make in
-            make.top.equalTo(dayTempLimitsView.snp.bottom).offset(16)
+            make.top.equalTo(dayWeatherView.snp.bottom).offset(16)
             make.bottom.horizontalEdges.equalToSuperview().inset(16)
             make.height.equalTo(100)
         }

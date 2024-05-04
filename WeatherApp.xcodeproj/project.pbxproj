@@ -9,13 +9,13 @@
 /* Begin PBXBuildFile section */
 		774CE6F62BE6859E001BC511 /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774CE6F52BE6859E001BC511 /* BaseView.swift */; };
 		774CE6F82BE685E0001BC511 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774CE6F72BE685E0001BC511 /* BaseViewController.swift */; };
+		774CE6FA2BE688EB001BC511 /* DayWeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774CE6F92BE688EB001BC511 /* DayWeatherView.swift */; };
 		77D4BB712BE2829B00056404 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB702BE2829B00056404 /* AppDelegate.swift */; };
 		77D4BB732BE2829B00056404 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB722BE2829B00056404 /* SceneDelegate.swift */; };
 		77D4BB752BE2829B00056404 /* WeatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB742BE2829B00056404 /* WeatherViewController.swift */; };
 		77D4BB7A2BE2829D00056404 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 77D4BB792BE2829D00056404 /* Assets.xcassets */; };
 		77D4BB7D2BE2829D00056404 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 77D4BB7C2BE2829D00056404 /* Base */; };
-		77D4BB892BE28D1000056404 /* DayTempLimitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB882BE28D1000056404 /* DayTempLimitsView.swift */; };
-		77D4BB8F2BE2AB5A00056404 /* HourlyWeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB8E2BE2AB5A00056404 /* HourlyWeatherView.swift */; };
+		77D4BB8F2BE2AB5A00056404 /* DayHourlyWeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB8E2BE2AB5A00056404 /* DayHourlyWeatherView.swift */; };
 		77D4BB922BE2DFF300056404 /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB902BE2DFF300056404 /* BottomBarView.swift */; };
 		77D4BB932BE2DFF300056404 /* TitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D4BB912BE2DFF300056404 /* TitleView.swift */; };
 		F1240E0BF8C2EFD7551A312D /* Pods_WeatherApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91A3E76353F1A2732D93085D /* Pods_WeatherApp.framework */; };
@@ -26,6 +26,7 @@
 		6945823F7ECBABF8CF4D72CB /* Pods-WeatherApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherApp.release.xcconfig"; path = "Target Support Files/Pods-WeatherApp/Pods-WeatherApp.release.xcconfig"; sourceTree = "<group>"; };
 		774CE6F52BE6859E001BC511 /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		774CE6F72BE685E0001BC511 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		774CE6F92BE688EB001BC511 /* DayWeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayWeatherView.swift; sourceTree = "<group>"; };
 		77D4BB6D2BE2829B00056404 /* WeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77D4BB702BE2829B00056404 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		77D4BB722BE2829B00056404 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -33,8 +34,7 @@
 		77D4BB792BE2829D00056404 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		77D4BB7C2BE2829D00056404 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		77D4BB7E2BE2829D00056404 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		77D4BB882BE28D1000056404 /* DayTempLimitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayTempLimitsView.swift; sourceTree = "<group>"; };
-		77D4BB8E2BE2AB5A00056404 /* HourlyWeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWeatherView.swift; sourceTree = "<group>"; };
+		77D4BB8E2BE2AB5A00056404 /* DayHourlyWeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayHourlyWeatherView.swift; sourceTree = "<group>"; };
 		77D4BB902BE2DFF300056404 /* BottomBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomBarView.swift; sourceTree = "<group>"; };
 		77D4BB912BE2DFF300056404 /* TitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleView.swift; sourceTree = "<group>"; };
 		91A3E76353F1A2732D93085D /* Pods_WeatherApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WeatherApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -116,8 +116,8 @@
 			children = (
 				77D4BB902BE2DFF300056404 /* BottomBarView.swift */,
 				77D4BB912BE2DFF300056404 /* TitleView.swift */,
-				77D4BB882BE28D1000056404 /* DayTempLimitsView.swift */,
-				77D4BB8E2BE2AB5A00056404 /* HourlyWeatherView.swift */,
+				77D4BB8E2BE2AB5A00056404 /* DayHourlyWeatherView.swift */,
+				774CE6F92BE688EB001BC511 /* DayWeatherView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -244,14 +244,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				77D4BB8F2BE2AB5A00056404 /* HourlyWeatherView.swift in Sources */,
+				774CE6FA2BE688EB001BC511 /* DayWeatherView.swift in Sources */,
+				77D4BB8F2BE2AB5A00056404 /* DayHourlyWeatherView.swift in Sources */,
 				77D4BB752BE2829B00056404 /* WeatherViewController.swift in Sources */,
 				77D4BB712BE2829B00056404 /* AppDelegate.swift in Sources */,
 				77D4BB932BE2DFF300056404 /* TitleView.swift in Sources */,
 				77D4BB922BE2DFF300056404 /* BottomBarView.swift in Sources */,
 				774CE6F82BE685E0001BC511 /* BaseViewController.swift in Sources */,
 				77D4BB732BE2829B00056404 /* SceneDelegate.swift in Sources */,
-				77D4BB892BE28D1000056404 /* DayTempLimitsView.swift in Sources */,
 				774CE6F62BE6859E001BC511 /* BaseView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
