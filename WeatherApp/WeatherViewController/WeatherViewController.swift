@@ -17,6 +17,7 @@ final class WeatherViewController: BaseViewController {
     private let temporaryContentView = UIView()
     private let dayWeatherView = DayWeatherView()
     private let hourlyWeaterView = DayHourlyWeatherView()
+    private let searchField = UISearchTextField()
 
     override func setup() {
         super.setup()
@@ -31,6 +32,7 @@ final class WeatherViewController: BaseViewController {
         setupTemporaryContentView()
         setupDayWeatherView()
         setupDayWeaterView()
+        setupSearchField()
     }
 
     private func setupBackgroundImage() {
@@ -82,7 +84,7 @@ final class WeatherViewController: BaseViewController {
     private func setupTemporaryContentView() {
         view.addSubview(temporaryContentView)
 
-        temporaryContentView.backgroundColor = UIColor(named: "lightBlue")
+        temporaryContentView.backgroundColor = .black// UIColor(named: "lightBlue")
         temporaryContentView.layer.borderColor = UIColor.white.withAlphaComponent(0.3).cgColor
         temporaryContentView.layer.borderWidth = 1
         temporaryContentView.layer.cornerRadius = 15
@@ -148,8 +150,37 @@ final class WeatherViewController: BaseViewController {
 
         hourlyWeaterView.snp.makeConstraints { make in
             make.top.equalTo(dayWeatherView.snp.bottom).offset(16)
-            make.bottom.horizontalEdges.equalToSuperview().inset(16)
+            make.horizontalEdges.equalToSuperview().inset(16)
             make.height.equalTo(100)
+        }
+    }
+
+    private func setupSearchField() {
+        temporaryContentView.addSubview(searchField)
+
+        let tintColor = UIColor.white.withAlphaComponent(0.5)
+        searchField.attributedPlaceholder = NSAttributedString(
+            string:  "Search city or airport",
+            attributes: [.foregroundColor: tintColor]
+        )
+        searchField.backgroundColor = .white.withAlphaComponent(0.1)
+        searchField.tintColor = .white
+        searchField.leftView?.tintColor = tintColor
+
+        let rightView = UIButton()
+        rightView.setImage(UIImage(systemName: "list.bullet"), for: .normal)
+        rightView.tintColor = tintColor
+        rightView.addAction(UIAction { _ in
+            print("rightView action")
+        }, for: .touchUpInside)
+
+        searchField.rightView = rightView
+        searchField.rightViewMode = .unlessEditing
+
+        searchField.snp.makeConstraints { make in
+            make.top.equalTo(hourlyWeaterView.snp.bottom).offset(16)
+            make.bottom.horizontalEdges.equalToSuperview().inset(16)
+            make.height.equalTo(40)
         }
     }
 }
