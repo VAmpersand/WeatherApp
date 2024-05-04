@@ -18,6 +18,7 @@ final class WeatherViewController: BaseViewController {
     private let dayWeatherView = DayWeatherView()
     private let hourlyWeaterView = DayHourlyWeatherView()
     private let searchField = UISearchTextField()
+    private let cityView = CityView()
 
     override func setup() {
         super.setup()
@@ -33,6 +34,7 @@ final class WeatherViewController: BaseViewController {
         setupDayWeatherView()
         setupDayWeaterView()
         setupSearchField()
+        setupCityView()
     }
 
     private func setupBackgroundImage() {
@@ -97,7 +99,6 @@ final class WeatherViewController: BaseViewController {
 
     private func setupDayWeatherView() {
         temporaryContentView.addSubview(dayWeatherView)
-
         dayWeatherView.setup(
             DayWeatherView.InputModel(title: "Now",
                                       image: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
@@ -115,7 +116,6 @@ final class WeatherViewController: BaseViewController {
 
     private func setupDayWeaterView() {
         temporaryContentView.addSubview(hourlyWeaterView)
-
         hourlyWeaterView.setup(
             [
                 DayHourlyWeatherView.InputModel(hour: "Now",
@@ -179,8 +179,25 @@ final class WeatherViewController: BaseViewController {
 
         searchField.snp.makeConstraints { make in
             make.top.equalTo(hourlyWeaterView.snp.bottom).offset(16)
-            make.bottom.horizontalEdges.equalToSuperview().inset(16)
+            make.horizontalEdges.equalToSuperview().inset(16)
             make.height.equalTo(40)
+        }
+    }
+
+    private func setupCityView() {
+        temporaryContentView.addSubview(cityView)
+        cityView.setup(
+            CityView.InputModel(title: "Current palce",
+                                subtitle: "Bueos Aires",
+                                currentTemp: 19,
+                                description: "Clear sky",
+                                minTemp: 15,
+                                maxTemp: 22)
+        )
+
+        cityView.snp.makeConstraints { make in
+            make.top.equalTo(searchField.snp.bottom).offset(16)
+            make.bottom.horizontalEdges.equalToSuperview().inset(16)
         }
     }
 }
