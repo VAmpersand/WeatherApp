@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class DayTempLimitsView: UIView {
+extension DayTempLimitsView {
     struct InputModel {
         let minWeekTemp: Double
         let maxWeekTemp: Double
@@ -16,12 +16,14 @@ final class DayTempLimitsView: UIView {
         let maxDayTemp: Double
         let currentTemt: Double?
     }
+}
 
+final class DayTempLimitsView: BaseView {
     private let tempLimitsView = UIView()
     private let currentTempView = UIView()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func setup() {
+        super.setup()
 
         backgroundColor = UIColor(named: "darkBlue")?.withAlphaComponent(0.5)
         layer.cornerRadius = 3
@@ -32,10 +34,6 @@ final class DayTempLimitsView: UIView {
 
         setupTempLimitsView()
         setupCurrentTempView()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     func setup(_ model: InputModel) {

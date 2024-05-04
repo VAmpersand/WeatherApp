@@ -8,8 +8,7 @@
 import UIKit
 import SnapKit
 
-final class WeatherViewController: UIViewController {
-
+final class WeatherViewController: BaseViewController {
     private let backgroundImage = UIImageView()
     private let titleContainer = UIView()
     private let titleView = TitleView()
@@ -19,9 +18,9 @@ final class WeatherViewController: UIViewController {
     private let dayTempLimitsView = DayTempLimitsView()
     private let hourlyWeaterView = HourlyWeatherView()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
+    override func setup() {
+        super.setup()
+        
         view.backgroundColor = .white
 
         setupBackgroundImage()

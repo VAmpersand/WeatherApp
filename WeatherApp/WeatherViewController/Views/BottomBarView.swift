@@ -8,13 +8,12 @@
 import UIKit
 import SnapKit
 
-final class BottomBarView: UIView {
-
+final class BottomBarView: BaseView {
     private let deviderView = UIView()
     private let cityListButton = UIButton()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func setup() {
+        super.setup()
 
         backgroundColor = UIColor(named: "lightBlue")
         layer.shadowColor = UIColor.white.cgColor
@@ -23,10 +22,6 @@ final class BottomBarView: UIView {
 
         setupDeviderView()
         setupCityListButton()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     private func setupDeviderView() {
