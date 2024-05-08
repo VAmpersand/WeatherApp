@@ -72,12 +72,12 @@
 			path = BaseComponents;
 			sourceTree = "<group>";
 		};
-		774CE6FB2BE6BCF0001BC511 /* CitySelectionViewCollection */ = {
+		774CE6FB2BE6BCF0001BC511 /* CitySelection */ = {
 			isa = PBXGroup;
 			children = (
 				77CED20F2BE6BD6300ABEF2B /* View */,
 			);
-			path = CitySelectionViewCollection;
+			path = CitySelection;
 			sourceTree = "<group>";
 		};
 		77CED20F2BE6BD6300ABEF2B /* View */ = {
@@ -109,11 +109,11 @@
 		77D4BB6F2BE2829B00056404 /* WeatherApp */ = {
 			isa = PBXGroup;
 			children = (
-				774CE6FB2BE6BCF0001BC511 /* CitySelectionViewCollection */,
+				774CE6FB2BE6BCF0001BC511 /* CitySelection */,
 				774CE6F42BE6858D001BC511 /* BaseComponents */,
 				77D4BB702BE2829B00056404 /* AppDelegate.swift */,
 				77D4BB722BE2829B00056404 /* SceneDelegate.swift */,
-				77D4BB842BE2848900056404 /* WeatherViewController */,
+				77D4BB842BE2848900056404 /* CityWeather */,
 				77D4BB792BE2829D00056404 /* Assets.xcassets */,
 				77D4BB7B2BE2829D00056404 /* LaunchScreen.storyboard */,
 				77D4BB7E2BE2829D00056404 /* Info.plist */,
@@ -121,13 +121,13 @@
 			path = WeatherApp;
 			sourceTree = "<group>";
 		};
-		77D4BB842BE2848900056404 /* WeatherViewController */ = {
+		77D4BB842BE2848900056404 /* CityWeather */ = {
 			isa = PBXGroup;
 			children = (
 				77D4BB852BE2849600056404 /* Views */,
 				77D4BB742BE2829B00056404 /* WeatherViewController.swift */,
 			);
-			path = WeatherViewController;
+			path = CityWeather;
 			sourceTree = "<group>";
 		};
 		77D4BB852BE2849600056404 /* Views */ = {
