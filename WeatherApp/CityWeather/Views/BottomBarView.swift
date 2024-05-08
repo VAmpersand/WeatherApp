@@ -12,6 +12,8 @@ final class BottomBarView: BaseView {
     private let deviderView = UIView()
     private let cityListButton = UIButton()
 
+    var cityListButtonAction: (() -> Void)?
+
     override func setup() {
         super.setup()
 
@@ -42,6 +44,9 @@ final class BottomBarView: BaseView {
             for: .normal
         )
         cityListButton.tintColor = .white
+        cityListButton.addAction(UIAction { _ in
+            self.cityListButtonAction?()
+        }, for: .touchUpInside)
 
         cityListButton.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(5)
