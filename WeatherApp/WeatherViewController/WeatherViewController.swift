@@ -8,20 +8,21 @@
 import UIKit
 import SnapKit
 
-final class WeatherViewController: UIViewController {
-
+final class WeatherViewController: BaseViewController {
     private let backgroundImage = UIImageView()
     private let titleContainer = UIView()
     private let titleView = TitleView()
     private let bottomBarView = BottomBarView()
 
     private let temporaryContentView = UIView()
-    private let dayTempLimitsView = DayTempLimitsView()
-    private let hourlyWeaterView = HourlyWeatherView()
+    private let dayWeatherView = DayWeatherView()
+    private let hourlyWeaterView = DayHourlyWeatherView()
+    private let searchField = UISearchTextField()
+    private let cityView = CityView()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
+    override func setup() {
+        super.setup()
+        
         view.backgroundColor = .white
 
         setupBackgroundImage()
@@ -30,8 +31,10 @@ final class WeatherViewController: UIViewController {
         setupBottomBarView()
 
         setupTemporaryContentView()
-        setupDayTempView()
+        setupDayWeatherView()
         setupDayWeaterView()
+        setupSearchField()
+        setupCityView()
     }
 
     private func setupBackgroundImage() {
@@ -83,7 +86,7 @@ final class WeatherViewController: UIViewController {
     private func setupTemporaryContentView() {
         view.addSubview(temporaryContentView)
 
-        temporaryContentView.backgroundColor = UIColor(named: "lightBlue")
+        temporaryContentView.backgroundColor = .black// UIColor(named: "lightBlue")
         temporaryContentView.layer.borderColor = UIColor.white.withAlphaComponent(0.3).cgColor
         temporaryContentView.layer.borderWidth = 1
         temporaryContentView.layer.cornerRadius = 15
@@ -94,62 +97,107 @@ final class WeatherViewController: UIViewController {
         }
     }
 
-    private func setupDayTempView() {
-        temporaryContentView.addSubview(dayTempLimitsView)
-
-        dayTempLimitsView.setup(
-            DayTempLimitsView.InputModel(minWeekTemp: 13,
-                                         maxWeekTemp: 25,
-                                         minDayTemp: 15,
-                                         maxDayTemp: 22,
-                                         currentTemt: 16)
+    private func setupDayWeatherView() {
+        temporaryContentView.addSubview(dayWeatherView)
+        dayWeatherView.setup(
+            DayWeatherView.InputModel(title: "Now",
+                                      image: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
+                                      minTemp: 13,
+                                      maxTemp: 25,
+                                      minDayTemp: 15,
+                                      maxDayTemp: 22,
+                                      currentTemt: 16)
         )
 
-        dayTempLimitsView.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().inset(16)
-            make.width.equalTo(200)
+        dayWeatherView.snp.makeConstraints { make in
+            make.top.horizontalEdges.equalToSuperview().inset(16)
         }
     }
 
     private func setupDayWeaterView() {
         temporaryContentView.addSubview(hourlyWeaterView)
-
         hourlyWeaterView.setup(
             [
-                HourlyWeatherView.InputModel(hour: "Now",
+                DayHourlyWeatherView.InputModel(hour: "Now",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "12",
+                DayHourlyWeatherView.InputModel(hour: "12",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "13",
+                DayHourlyWeatherView.InputModel(hour: "13",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "14",
+                DayHourlyWeatherView.InputModel(hour: "14",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "15",
+                DayHourlyWeatherView.InputModel(hour: "15",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "16",
+                DayHourlyWeatherView.InputModel(hour: "16",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "17",
+                DayHourlyWeatherView.InputModel(hour: "17",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "18",
+                DayHourlyWeatherView.InputModel(hour: "18",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
-                HourlyWeatherView.InputModel(hour: "19",
+                DayHourlyWeatherView.InputModel(hour: "19",
                                              icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
                                              temp: 19),
             ]
         )
 
         hourlyWeaterView.snp.makeConstraints { make in
-            make.top.equalTo(dayTempLimitsView.snp.bottom).offset(16)
-            make.bottom.horizontalEdges.equalToSuperview().inset(16)
+            make.top.equalTo(dayWeatherView.snp.bottom).offset(16)
+            make.horizontalEdges.equalToSuperview().inset(16)
             make.height.equalTo(100)
+        }
+    }
+
+    private func setupSearchField() {
+        temporaryContentView.addSubview(searchField)
+
+        let tintColor = UIColor.white.withAlphaComponent(0.5)
+        searchField.attributedPlaceholder = NSAttributedString(
+            string:  "Search city or airport",
+            attributes: [.foregroundColor: tintColor]
+        )
+        searchField.backgroundColor = .white.withAlphaComponent(0.1)
+        searchField.tintColor = .white
+        searchField.leftView?.tintColor = tintColor
+
+        let rightView = UIButton()
+        rightView.setImage(UIImage(systemName: "list.bullet"), for: .normal)
+        rightView.tintColor = tintColor
+        rightView.addAction(UIAction { _ in
+            print("rightView action")
+        }, for: .touchUpInside)
+
+        searchField.rightView = rightView
+        searchField.rightViewMode = .unlessEditing
+
+        searchField.snp.makeConstraints { make in
+            make.top.equalTo(hourlyWeaterView.snp.bottom).offset(16)
+            make.horizontalEdges.equalToSuperview().inset(16)
+            make.height.equalTo(40)
+        }
+    }
+
+    private func setupCityView() {
+        temporaryContentView.addSubview(cityView)
+        cityView.setup(
+            CityView.InputModel(title: "Current palce",
+                                subtitle: "Bueos Aires",
+                                currentTemp: 19,
+                                description: "Clear sky",
+                                minTemp: 15,
+                                maxTemp: 22)
+        )
+
+        cityView.snp.makeConstraints { make in
+            make.top.equalTo(searchField.snp.bottom).offset(16)
+            make.bottom.horizontalEdges.equalToSuperview().inset(16)
         }
     }
 }

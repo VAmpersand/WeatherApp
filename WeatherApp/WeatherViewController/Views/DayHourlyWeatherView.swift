@@ -1,5 +1,5 @@
 //
-//  HourlyWeatherView.swift
+//  DayHourlyWeatherView.swift
 //  WeatherApp
 //
 //  Created by Viktor Prikolota on 01.05.2024.
@@ -8,25 +8,23 @@
 import UIKit
 import SnapKit
 
-final class HourlyWeatherView: UIView {
+extension DayHourlyWeatherView {
     struct InputModel {
         let hour: String
         let icon: UIImage?
         let temp: Int
     }
+}
 
+final class DayHourlyWeatherView: BaseView {
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func setup() {
+        super.setup()
 
         setupScrollView()
         setupStackView()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     func setup(_ models: [InputModel]) {
@@ -60,9 +58,8 @@ final class HourlyWeatherView: UIView {
     }
 }
 
-extension HourlyWeatherView {
+extension DayHourlyWeatherView {
     final class HourWeatherView: UIView {
-
         private let stackView = UIStackView()
         private let hourLabel = UILabel()
         private let iconView = UIImageView()

@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class TitleView: UIView {
+extension TitleView {
     struct InputModel {
         let title: String
         let subtitle: String?
@@ -17,7 +17,9 @@ final class TitleView: UIView {
         let minTemp: Int
         let maxTemp: Int
     }
-    
+}
+
+final class TitleView: BaseView {
     private let stackView = UIStackView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
@@ -25,9 +27,9 @@ final class TitleView: UIView {
     private let descriptionLable = UILabel()
     private let tempLimitsLabel = UILabel()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
+    override func setup() {
+        super.setup()
+
         setupStackView()
         setupTitleLabel()
         setupSubitleLabel()
@@ -35,11 +37,7 @@ final class TitleView: UIView {
         setupDescriptionLable()
         setupTempLimitsLabel()
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
     func setup(_ model: InputModel) {
         titleLabel.text = model.title
         subtitleLabel.text = model.subtitle
