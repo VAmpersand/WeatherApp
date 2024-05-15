@@ -91,6 +91,14 @@
 			path = CitySelection;
 			sourceTree = "<group>";
 		};
+		779935112BEFB6E5001173FB /* WebViewController */ = {
+			isa = PBXGroup;
+			children = (
+				779935132BEFB712001173FB /* WebViewController.swift */,
+			);
+			path = WebViewController;
+			sourceTree = "<group>";
+		};
 		77CED20F2BE6BD6300ABEF2B /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +129,7 @@
 		77D4BB6F2BE2829B00056404 /* WeatherApp */ = {
 			isa = PBXGroup;
 			children = (
+				779935112BEFB6E5001173FB /* WebViewController */,
 				774CE6FB2BE6BCF0001BC511 /* CitySelection */,
 				774CE6F42BE6858D001BC511 /* BaseComponents */,
 				77D4BB702BE2829B00056404 /* AppDelegate.swift */,
@@ -288,6 +297,7 @@
 				774CE6F82BE685E0001BC511 /* BaseViewController.swift in Sources */,
 				77C183A12BF4D77800FC3227 /* WebViewController.swift in Sources */,
 				77D4BB732BE2829B00056404 /* SceneDelegate.swift in Sources */,
+				779935142BEFB712001173FB /* WebViewController.swift in Sources */,
 				774CE6F62BE6859E001BC511 /* BaseView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
