@@ -17,7 +17,7 @@ final class BottomBarView: BaseView {
     override func setup() {
         super.setup()
 
-        backgroundColor = UIColor(named: "lightBlue")
+        backgroundColor = .waLightBlue
         layer.shadowColor = UIColor.white.cgColor
         layer.shadowOpacity = 0.3
         layer.shadowRadius = 15

@@ -15,7 +15,7 @@ class WebViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = UIColor(named: "darkGrey")
+        view.backgroundColor = .waDarkGray
 
         setupCloseButton()
         setupWebView()

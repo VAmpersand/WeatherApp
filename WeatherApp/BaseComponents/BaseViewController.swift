@@ -18,7 +18,9 @@ class BaseViewController: UIViewController {
 
     func setupCloseButton() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "xmark.circle.fill")?.applyingSymbolConfiguration(.init(hierarchicalColor: .white)),
+            image: UIImage(systemName: "xmark.circle.fill")?
+                .applyingSymbolConfiguration(.init(hierarchicalColor: .white))?
+                .applyingSymbolConfiguration(.init(font: .systemFont(ofSize: 20))),
             style: .plain,
             target: self,
             action: #selector(closeAction)
