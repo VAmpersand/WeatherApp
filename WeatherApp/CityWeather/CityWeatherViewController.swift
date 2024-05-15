@@ -73,7 +73,9 @@ final class CityWeatherViewController: BaseViewController {
     private func setupBottomBarView() {
         view.addSubview(bottomBarView)
         bottomBarView.cityListButtonAction = { [weak self] in
-            self?.present(CitySelectionViewController(), animated: true)
+            let viewController = CitySelectionViewController()
+            let navigationController = BaseNavigationController(rootViewController: viewController)
+            self?.present(navigationController, animated: true)
         }
 
         bottomBarView.snp.makeConstraints { make in

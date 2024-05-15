@@ -14,6 +14,7 @@ final class CitySelectionViewController: BaseViewController {
 
     private let showHideUnitSelectionButton = UIButton()
     private let unitSelectionView = UnitSelectionView()
+    private let showWebViewButton = UIButton()
 
     override func setup() {
         super.setup()
@@ -25,6 +26,11 @@ final class CitySelectionViewController: BaseViewController {
 
         setupShowHideUnitSelectionButton()
         setupUnitSelectionView()
+        setupShowWebViewButton()
+    }
+
+    private func setupNavigationBar() {
+//        navigationItem.lar
     }
 
     private func setupSearchField() {
@@ -106,6 +112,33 @@ final class CitySelectionViewController: BaseViewController {
         unitSelectionView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.size.equalTo(100)
+        }
+    }
+
+    private func setupShowWebViewButton() {
+        view.addSubview(showWebViewButton)
+
+        showWebViewButton.setTitle("Show Info", for: .normal)
+        showWebViewButton.setTitleColor(.black, for: .normal)
+        showWebViewButton.backgroundColor = .white.withAlphaComponent(0.6)
+        showWebViewButton.layer.cornerRadius = 8
+
+        showWebViewButton.addAction(UIAction { [weak self] _ in
+            guard let self else { return }
+
+            let webViewController = WebViewController()
+            if let url = URL(string: "https://meteoinfo.ru/t-scale") {
+                webViewController.open(url)
+            }
+            webViewController.title = "Info"
+            let navigationController = BaseNavigationController(rootViewController: webViewController)
+            present(navigationController, animated: true)
+        }, for: .touchUpInside)
+
+        showWebViewButton.snp.makeConstraints { make in
+            make.top.equalTo(showHideUnitSelectionButton.snp.bottom).offset(16)
+            make.horizontalEdges.equalToSuperview().inset(16)
+            make.height.equalTo(40)
         }
     }
 }
