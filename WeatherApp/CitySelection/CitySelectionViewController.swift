@@ -9,10 +9,8 @@ import UIKit
 import SnapKit
 
 final class CitySelectionViewController: BaseViewController {
-    private let searchField = UISearchTextField()
     private let cityView = CityView()
 
-    private let showHideUnitSelectionButton = UIButton()
     private let unitSelectionView = UnitSelectionView()
     private let showWebViewButton = UIButton()
 
@@ -20,42 +18,37 @@ final class CitySelectionViewController: BaseViewController {
         super.setup()
 
         view.backgroundColor = .black
+        title = "Weather"
 
-        setupSearchField()
+        setupNavigationBar()
         setupCityView()
 
-        setupShowHideUnitSelectionButton()
         setupUnitSelectionView()
         setupShowWebViewButton()
     }
 
-    private func setupSearchField() {
-        view.addSubview(searchField)
+    private func setupNavigationBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
 
-        let tintColor = UIColor.white.withAlphaComponent(0.5)
-        searchField.attributedPlaceholder = NSAttributedString(
-            string:  "Search city or airport",
-            attributes: [.foregroundColor: tintColor]
-        )
-        searchField.backgroundColor = .white.withAlphaComponent(0.1)
-        searchField.tintColor = .white
-        searchField.leftView?.tintColor = tintColor
+        let citySearchViewController = CitySearchViewController()
+        let searchController = UISearchController(searchResultsController: citySearchViewController)
+        searchController.searchResultsUpdater = citySearchViewController
+        searchController.searchBar.searchTextField.placeholder = "Search city or airport"
+        searchController.searchBar.showsBookmarkButton = true
+        searchController.searchBar.setImage(UIImage(systemName: "list.bullet"),
+                                            for: .bookmark,
+                                            state: .normal)
+        searchController.searchBar.delegate = self
+        searchController.showsSearchResultsController = true
+        
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
 
-        let rightView = UIButton()
-        rightView.setImage(UIImage(systemName: "list.bullet"), for: .normal)
-        rightView.tintColor = tintColor
-        rightView.addAction(UIAction { _ in
-            print("rightView action")
-        }, for: .touchUpInside)
-
-        searchField.rightView = rightView
-        searchField.rightViewMode = .unlessEditing
-
-        searchField.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
-            make.horizontalEdges.equalToSuperview().inset(16)
-            make.height.equalTo(40)
-        }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "ellipsis.circle"),
+            style: .plain,
+            target: self,
+            action: #selector(rightBarButtonAction))
     }
 
     private func setupCityView() {
@@ -70,32 +63,8 @@ final class CitySelectionViewController: BaseViewController {
         )
 
         cityView.snp.makeConstraints { make in
-            make.top.equalTo(searchField.snp.bottom).offset(16)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
             make.horizontalEdges.equalToSuperview().inset(16)
-        }
-    }
-
-    private func setupShowHideUnitSelectionButton() {
-        view.addSubview(showHideUnitSelectionButton)
-
-        showHideUnitSelectionButton.setTitle("Show UnitSelection", for: .normal)
-        showHideUnitSelectionButton.setTitleColor(.black, for: .normal)
-        showHideUnitSelectionButton.backgroundColor = .white.withAlphaComponent(0.6)
-        showHideUnitSelectionButton.layer.cornerRadius = 8
-
-        showHideUnitSelectionButton.addAction(UIAction { [weak self] _ in
-            guard let self else { return }
-
-            unitSelectionView.isHidden.toggle()
-
-            let buttonTitle = unitSelectionView.isHidden ? "Show UnitSelection" : "Hide UnitSelection"
-            showHideUnitSelectionButton.setTitle(buttonTitle, for: .normal)
-        }, for: .touchUpInside)
-
-        showHideUnitSelectionButton.snp.makeConstraints { make in
-            make.top.equalTo(cityView.snp.bottom).offset(16)
-            make.horizontalEdges.equalToSuperview().inset(16)
-            make.height.equalTo(40)
         }
     }
 
@@ -126,13 +95,25 @@ final class CitySelectionViewController: BaseViewController {
             if let url = URL(string: "https://meteoinfo.ru/t-scale") {
                 webViewController.open(url)
             }
-            present(webViewController, animated: true)
+            webViewController.title = "Info"
+            let navigationController = BaseNavigationController(rootViewController: webViewController)
+            present(navigationController, animated: true)
         }, for: .touchUpInside)
 
         showWebViewButton.snp.makeConstraints { make in
-            make.top.equalTo(showHideUnitSelectionButton.snp.bottom).offset(16)
+            make.top.equalTo(cityView.snp.bottom).offset(32)
             make.horizontalEdges.equalToSuperview().inset(16)
             make.height.equalTo(40)
         }
+    }
+
+    @IBAction private func rightBarButtonAction() {
+        unitSelectionView.isHidden.toggle()
+    }
+}
+
+extension CitySelectionViewController: UISearchBarDelegate {
+    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+        print("searchBarBookmarkButtonClicked")
     }
 }

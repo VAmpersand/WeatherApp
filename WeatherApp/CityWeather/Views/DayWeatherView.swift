@@ -114,7 +114,7 @@ extension DayWeatherView {
         override func setup() {
             super.setup()
 
-            backgroundColor = UIColor(named: "darkBlue")?.withAlphaComponent(0.5)
+            backgroundColor = .waDarkBlue.withAlphaComponent(0.5)
             layer.cornerRadius = 3
 
             snp.makeConstraints { make in
@@ -156,8 +156,8 @@ extension DayWeatherView {
         private func setupTempLimitsView() {
             addSubview(tempLimitsView)
 
-            tempLimitsView.backgroundColor = UIColor(named: "darkYellow")
-            tempLimitsView.layer.borderColor = UIColor(named: "darkBlue")?.withAlphaComponent(0.7).cgColor
+            tempLimitsView.backgroundColor = .waDarkYellow
+            tempLimitsView.layer.borderColor = UIColor.waDarkBlue.withAlphaComponent(0.7).cgColor
             tempLimitsView.layer.borderWidth = 1
             tempLimitsView.layer.cornerRadius = 3
 
@@ -171,7 +171,7 @@ extension DayWeatherView {
             addSubview(currentTempView)
 
             currentTempView.backgroundColor = .white
-            currentTempView.layer.borderColor = UIColor(named: "darkBlue")?.withAlphaComponent(0.7).cgColor
+            currentTempView.layer.borderColor = UIColor.waDarkBlue.withAlphaComponent(0.7).cgColor
             currentTempView.layer.borderWidth = 1
             currentTempView.layer.cornerRadius = 3
 

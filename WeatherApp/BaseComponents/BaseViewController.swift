@@ -15,4 +15,19 @@ class BaseViewController: UIViewController {
     }
 
     func setup() {}
+
+    func setupCloseButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "xmark.circle.fill")?
+                .applyingSymbolConfiguration(.init(hierarchicalColor: .white))?
+                .applyingSymbolConfiguration(.init(font: .systemFont(ofSize: 20))),
+            style: .plain,
+            target: self,
+            action: #selector(closeAction)
+        )
+    }
+
+    @IBAction private func closeAction() {
+        dismiss(animated: true)
+    }
 }

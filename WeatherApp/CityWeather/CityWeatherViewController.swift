@@ -15,8 +15,7 @@ final class CityWeatherViewController: BaseViewController {
     private let bottomBarView = BottomBarView()
 
     private let temporaryContentView = UIView()
-    private let dayWeatherView = DayWeatherView()
-    private let hourlyWeaterView = DayHourlyWeatherView()
+    private let showDelailsButton = UIButton()
 
     override func setup() {
         super.setup()
@@ -29,8 +28,7 @@ final class CityWeatherViewController: BaseViewController {
         setupBottomBarView()
 
         setupTemporaryContentView()
-        setupDayWeatherView()
-        setupDayWeaterView()
+        setupShowDetailsButton()
     }
 
     private func setupBackgroundImage() {
@@ -73,7 +71,9 @@ final class CityWeatherViewController: BaseViewController {
     private func setupBottomBarView() {
         view.addSubview(bottomBarView)
         bottomBarView.cityListButtonAction = { [weak self] in
-            self?.present(CitySelectionViewController(), animated: true)
+            let viewController = CitySelectionViewController()
+            let navigationController = BaseNavigationController(rootViewController: viewController)
+            self?.present(navigationController, animated: true)
         }
 
         bottomBarView.snp.makeConstraints { make in
@@ -85,7 +85,7 @@ final class CityWeatherViewController: BaseViewController {
     private func setupTemporaryContentView() {
         view.addSubview(temporaryContentView)
 
-        temporaryContentView.backgroundColor = .black// UIColor(named: "lightBlue")
+        temporaryContentView.backgroundColor = .black
         temporaryContentView.layer.borderColor = UIColor.white.withAlphaComponent(0.3).cgColor
         temporaryContentView.layer.borderWidth = 1
         temporaryContentView.layer.cornerRadius = 15
@@ -96,61 +96,26 @@ final class CityWeatherViewController: BaseViewController {
         }
     }
 
-    private func setupDayWeatherView() {
-        temporaryContentView.addSubview(dayWeatherView)
-        dayWeatherView.setup(
-            DayWeatherView.InputModel(title: "Now",
-                                      image: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
-                                      minTemp: 13,
-                                      maxTemp: 25,
-                                      minDayTemp: 15,
-                                      maxDayTemp: 22,
-                                      currentTemt: 16)
-        )
+    private func setupShowDetailsButton() {
+        temporaryContentView.addSubview(showDelailsButton)
+        showDelailsButton.setTitle("Show details", for: .normal)
+        showDelailsButton.setTitleColor(.white, for: .normal)
+        showDelailsButton.backgroundColor = .white.withAlphaComponent(0.3)
+        showDelailsButton.layer.cornerRadius = 5
+        showDelailsButton.addAction(UIAction { _ in
+            let detailsViewController = CityWeatherDetailedViewController()
+            let navigationController = BaseNavigationController(rootViewController: detailsViewController)
+            detailsViewController.setupNavigationBar(
+                withTitle: "Weather conditions",
+                andIcon: UIImage(systemName: "cloud.sun.fill")
+            )
+            self.present(navigationController, animated: true)
+        }, for: .touchUpInside)
 
-        dayWeatherView.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalToSuperview().inset(16)
+        showDelailsButton.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(16)
+            make.height.equalTo(40)
         }
-    }
 
-    private func setupDayWeaterView() {
-        temporaryContentView.addSubview(hourlyWeaterView)
-        hourlyWeaterView.setup(
-            [
-                DayHourlyWeatherView.InputModel(hour: "Now",
-                                             icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
-                                             temp: 19),
-                DayHourlyWeatherView.InputModel(hour: "12",
-                                             icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
-                                             temp: 19),
-                DayHourlyWeatherView.InputModel(hour: "13",
-                                             icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
-                                             temp: 19),
-                DayHourlyWeatherView.InputModel(hour: "14",
-                                             icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
-                                             temp: 19),
-                DayHourlyWeatherView.InputModel(hour: "15",
-                                             icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
-                                             temp: 19),
-                DayHourlyWeatherView.InputModel(hour: "16",
-                                             icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
-                                             temp: 19),
-                DayHourlyWeatherView.InputModel(hour: "17",
-                                             icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
-                                             temp: 19),
-                DayHourlyWeatherView.InputModel(hour: "18",
-                                             icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
-                                             temp: 19),
-                DayHourlyWeatherView.InputModel(hour: "19",
-                                             icon: UIImage(systemName: "sun.max.fill")?.withRenderingMode(.alwaysOriginal),
-                                             temp: 19),
-            ]
-        )
-
-        hourlyWeaterView.snp.makeConstraints { make in
-            make.top.equalTo(dayWeatherView.snp.bottom).offset(16)
-            make.bottom.horizontalEdges.equalToSuperview().inset(16)
-            make.height.equalTo(100)
-        }
     }
 }
