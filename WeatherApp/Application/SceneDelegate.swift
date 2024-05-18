@@ -16,10 +16,12 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+
+
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = CityWeatherViewController()
+        window?.rootViewController = BaseNavigationController(rootViewController: CitySelectionViewController())
         window?.makeKeyAndVisible()
     }
 
@@ -51,6 +53,18 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    private func makeInitialViewController() -> UIViewController {
+        let citySelectionViewController = CitySelectionViewController()
+        let citySelectionNavigationController = BaseNavigationController(rootViewController: CitySelectionViewController())
 
+        let cityWeatherViewController = CityWeatherViewController()
+        cityWeatherViewController.modalPresentationStyle = .fullScreen
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            citySelectionViewController.present(cityWeatherViewController, animated: false)
+        }
+
+        return citySelectionNavigationController
+    }
 }
 
