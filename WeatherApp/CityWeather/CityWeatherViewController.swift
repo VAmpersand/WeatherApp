@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 
 final class CityWeatherViewController: BaseViewController {
+    // MARK: - Properties
     private let backgroundImage = UIImageView()
     private let titleContainer = UIView()
     private let titleView = TitleView()
@@ -17,6 +18,7 @@ final class CityWeatherViewController: BaseViewController {
     private let temporaryContentView = UIView()
     private let showDelailsButton = UIButton()
 
+    // MARK: - Lifecycle
     override func setup() {
         super.setup()
         
@@ -31,6 +33,7 @@ final class CityWeatherViewController: BaseViewController {
         setupShowDetailsButton()
     }
 
+    // MARK: - Setup UI
     private func setupBackgroundImage() {
         view.addSubview(backgroundImage)
         backgroundImage.contentMode = .scaleAspectFill
@@ -53,14 +56,6 @@ final class CityWeatherViewController: BaseViewController {
 
     private func setupTitleView() {
         titleContainer.addSubview(titleView)
-        titleView.setup(
-            TitleView.InputModel(title: "Current palce",
-                                 subtitle: "BUENOS AIRES",
-                                 currentTemp: 19,
-                                 description: "Clear sky",
-                                 minTemp: 15,
-                                 maxTemp: 22)
-        )
 
         titleView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
@@ -71,9 +66,7 @@ final class CityWeatherViewController: BaseViewController {
     private func setupBottomBarView() {
         view.addSubview(bottomBarView)
         bottomBarView.cityListButtonAction = { [weak self] in
-            let viewController = CitySelectionViewController()
-            let navigationController = BaseNavigationController(rootViewController: viewController)
-            self?.present(navigationController, animated: true)
+            self?.dismiss(animated: true)
         }
 
         bottomBarView.snp.makeConstraints { make in
@@ -116,6 +109,10 @@ final class CityWeatherViewController: BaseViewController {
             make.edges.equalToSuperview().inset(16)
             make.height.equalTo(40)
         }
+    }
 
+    // MARK: - Public methods
+    func setup(_ data: MOCKData) {
+        titleView.setup(data.titleData)
     }
 }

@@ -9,12 +9,20 @@ import UIKit
 import SnapKit
 
 final class CitySearchViewController: BaseViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    // MARK: - Properties
+    
+    // MARK: - Lifecycle
+    override func setup() {
+        super.setup()
 
     }
+
+    // MARK: - Setup UI
+
+    // MARK: - Public methods
 }
 
+// MARK: - UISearchResultsUpdating
 extension CitySearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.searchTextField.text else { return }
