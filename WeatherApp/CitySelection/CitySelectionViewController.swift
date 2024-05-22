@@ -22,7 +22,7 @@ final class CitySelectionViewController: BaseViewController {
         title = "Weather"
 
         setupNavigationBar()
-        presentCityWeater(with: MOCKData.data.first, animated: false)
+        presentCityWeather(with: MOCKData.data.first, animated: false)
 
         setupTempStackView()
         setupUnitSelectionView()
@@ -68,7 +68,7 @@ final class CitySelectionViewController: BaseViewController {
                                                minTemp: data.titleData.minTemp,
                                                maxTemp: data.titleData.maxTemp))
 
-            cityView.tapAction = { [weak self] in self?.presentCityWeater(with: data) }
+            cityView.tapAction = { [weak self] in self?.presentCityWeather(with: data) }
             tempStackView.addArrangedSubview(cityView)
         }
 
@@ -116,7 +116,7 @@ final class CitySelectionViewController: BaseViewController {
         }
     }
 
-    private func presentCityWeater(with data: MOCKData?, animated: Bool = true) {
+    private func presentCityWeather(with data: MOCKData?, animated: Bool = true) {
         let viewController = CityWeatherViewController()
         viewController.modalPresentationStyle = .fullScreen
         if let data {

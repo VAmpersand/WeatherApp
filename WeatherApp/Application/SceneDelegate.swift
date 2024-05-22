@@ -52,19 +52,5 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
-    private func makeInitialViewController() -> UIViewController {
-        let citySelectionViewController = CitySelectionViewController()
-        let citySelectionNavigationController = BaseNavigationController(rootViewController: CitySelectionViewController())
-
-        let cityWeatherViewController = CityWeatherViewController()
-        cityWeatherViewController.modalPresentationStyle = .fullScreen
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            citySelectionViewController.present(cityWeatherViewController, animated: false)
-        }
-
-        return citySelectionNavigationController
-    }
 }
 
