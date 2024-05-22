@@ -17,9 +17,11 @@ extension DayHourlyWeatherView {
 }
 
 final class DayHourlyWeatherView: BaseView {
+    // MARK: Properties
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
 
+    // MARK: Lifecycle
     override func setup() {
         super.setup()
 
@@ -27,17 +29,7 @@ final class DayHourlyWeatherView: BaseView {
         setupStackView()
     }
 
-    func setup(_ models: [InputModel]) {
-        models.enumerated().forEach { index, model in
-            let view = HourWeatherView()
-            view.setup(model)
-            stackView.addArrangedSubview(view)
-            if index == 0 {
-                stackView.setCustomSpacing(35, after: view)
-            }
-        }
-    }
-
+    // MARK: Setup UI
     private func setupScrollView() {
         addSubview(scrollView)
         scrollView.showsHorizontalScrollIndicator = false
@@ -56,15 +48,30 @@ final class DayHourlyWeatherView: BaseView {
             make.edges.equalToSuperview()
         }
     }
+
+    // MARK: Public methods
+    func setup(_ models: [InputModel]) {
+        models.enumerated().forEach { index, model in
+            let view = HourWeatherView()
+            view.setup(model)
+            stackView.addArrangedSubview(view)
+            if index == 0 {
+                stackView.setCustomSpacing(35, after: view)
+            }
+        }
+    }
 }
 
+// MARK: - HourWeatherView
 extension DayHourlyWeatherView {
     final class HourWeatherView: UIView {
+        // MARK: Properties
         private let stackView = UIStackView()
         private let hourLabel = UILabel()
         private let iconView = UIImageView()
         private let tempLabel = UILabel()
 
+        // MARK: Lifecycle
         override init(frame: CGRect) {
             super.init(frame: frame)
 
@@ -78,12 +85,7 @@ extension DayHourlyWeatherView {
             fatalError("init(coder:) has not been implemented")
         }
 
-        func setup(_ model: InputModel) {
-            hourLabel.text = model.hour
-            iconView.image = model.icon
-            tempLabel.text = "\(model.temp)º"
-        }
-
+        // MARK: Setup UI
         private func setupStackView() {
             addSubview(stackView)
             stackView.axis = .vertical
@@ -112,6 +114,13 @@ extension DayHourlyWeatherView {
             tempLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
             tempLabel.textAlignment = .center
             tempLabel.textColor = .white
+        }
+
+        // MARK: Public methods
+        func setup(_ model: InputModel) {
+            hourLabel.text = model.hour
+            iconView.image = model.icon
+            tempLabel.text = "\(model.temp)º"
         }
     }
 }

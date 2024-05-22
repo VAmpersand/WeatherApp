@@ -9,17 +9,17 @@ import UIKit
 import SnapKit
 
 final class CitySearchViewController: BaseViewController {
-    // MARK: - Properties
+    // MARK: Properties
     
-    // MARK: - Lifecycle
+    // MARK: Lifecycle
     override func setup() {
         super.setup()
 
     }
 
-    // MARK: - Setup UI
+    // MARK: Setup UI
 
-    // MARK: - Public methods
+    // MARK: Public methods
 }
 
 // MARK: - UISearchResultsUpdating

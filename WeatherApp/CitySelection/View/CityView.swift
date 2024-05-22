@@ -20,6 +20,7 @@ extension CityView {
 }
 
 final class CityView: BaseView {
+    // MARK: Properties
     private let imageView = UIImageView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
@@ -29,6 +30,7 @@ final class CityView: BaseView {
 
     var tapAction: (() -> Void)? // TODO: - Remove after implement collection
 
+    // MARK: Lifecycle
     override func setup() {
         super.setup()
 
@@ -50,15 +52,7 @@ final class CityView: BaseView {
         tapAction?()
     }
 
-    func setup(_ model: InputModel) {
-        titleLabel.text = model.title
-        subtitleLabel.text = model.subtitle
-        subtitleLabel.isHidden = model.subtitle == nil
-        tempLabel.text = "\(model.currentTemp)º"
-        descriptionLable.text = model.description
-        tempLimitsLabel.text = "Max: \(model.maxTemp)º, min: \(model.minTemp)º"
-    }
-
+    // MARK: Setup UI
     private func setupImageView() {
         addSubview(imageView)
         imageView.image = UIImage(named: "clearSky")
@@ -126,5 +120,15 @@ final class CityView: BaseView {
             make.bottom.leading.equalToSuperview().inset(16)
             make.trailing.equalTo(tempLimitsLabel.snp.leading).offset(-20)
         }
+    }
+
+    // MARK: Public methods
+    func setup(_ model: InputModel) {
+        titleLabel.text = model.title
+        subtitleLabel.text = model.subtitle
+        subtitleLabel.isHidden = model.subtitle == nil
+        tempLabel.text = "\(model.currentTemp)º"
+        descriptionLable.text = model.description
+        tempLimitsLabel.text = "Max: \(model.maxTemp)º, min: \(model.minTemp)º"
     }
 }

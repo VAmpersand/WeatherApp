@@ -9,12 +9,11 @@ import UIKit
 import SnapKit
 
 final class CitySelectionViewController: BaseViewController {
-    // MARK: - Properties
+    // MARK: Properties
     private let tempStackView = UIStackView()
     private let unitSelectionView = UnitSelectionView()
-    private let showWebViewButton = UIButton()
 
-    // MARK: - Lifecycle
+    // MARK: Lifecycle
     override func setup() {
         super.setup()
 
@@ -22,14 +21,23 @@ final class CitySelectionViewController: BaseViewController {
         title = "Weather"
 
         setupNavigationBar()
+        setupUnitSelectionView()
         presentCityWeather(with: MOCKData.data.first, animated: false)
 
         setupTempStackView()
-        setupUnitSelectionView()
-        setupShowWebViewButton()
     }
 
-    // MARK: - Setup UI
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if let statusBarHeight = view.window?.windowScene?.statusBarManager?.statusBarFrame.height {
+            unitSelectionView.snp.updateConstraints { make in
+                make.top.equalToSuperview().offset(statusBarHeight + 50)
+            }
+        }
+    }
+
+    // MARK: Setup UI
     private func setupNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
 
@@ -51,7 +59,19 @@ final class CitySelectionViewController: BaseViewController {
             image: UIImage(systemName: "ellipsis.circle"),
             style: .plain,
             target: self,
-            action: #selector(rightBarButtonAction))
+            action: #selector(rightBarButtonAction)
+        )
+    }
+
+    private func setupUnitSelectionView() {
+        navigationController?.view.addSubview(unitSelectionView)
+        unitSelectionView.isHidden = true
+        unitSelectionView.delegate = self
+
+        unitSelectionView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(0)
+            make.trailing.equalToSuperview().inset(16)
+        }
     }
 
     private func setupTempStackView() {
@@ -77,45 +97,6 @@ final class CitySelectionViewController: BaseViewController {
         }
     }
 
-    private func setupUnitSelectionView() {
-        view.addSubview(unitSelectionView)
-
-        unitSelectionView.backgroundColor = .white.withAlphaComponent(0.8)
-        unitSelectionView.isHidden = true
-
-        unitSelectionView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.size.equalTo(100)
-        }
-    }
-
-    private func setupShowWebViewButton() {
-        view.addSubview(showWebViewButton)
-
-        showWebViewButton.setTitle("Show Info", for: .normal)
-        showWebViewButton.setTitleColor(.black, for: .normal)
-        showWebViewButton.backgroundColor = .white.withAlphaComponent(0.6)
-        showWebViewButton.layer.cornerRadius = 8
-
-        showWebViewButton.addAction(UIAction { [weak self] _ in
-            guard let self else { return }
-
-            let webViewController = WebViewController()
-            if let url = URL(string: "https://meteoinfo.ru/t-scale") {
-                webViewController.open(url)
-            }
-            webViewController.title = "Info"
-            let navigationController = BaseNavigationController(rootViewController: webViewController)
-            present(navigationController, animated: true)
-        }, for: .touchUpInside)
-
-        showWebViewButton.snp.makeConstraints { make in
-            make.top.equalTo(tempStackView.snp.bottom).offset(32)
-            make.horizontalEdges.equalToSuperview().inset(16)
-            make.height.equalTo(40)
-        }
-    }
-
     private func presentCityWeather(with data: MOCKData?, animated: Bool = true) {
         let viewController = CityWeatherViewController()
         viewController.modalPresentationStyle = .fullScreen
@@ -129,12 +110,33 @@ final class CitySelectionViewController: BaseViewController {
         unitSelectionView.isHidden.toggle()
     }
 
-    // MARK: - Public methods
+    // MARK: Public methods
 }
 
 // MARK: - UISearchBarDelegate
 extension CitySelectionViewController: UISearchBarDelegate {
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
         print("searchBarBookmarkButtonClicked")
+    }
+}
+
+// MARK: - UnitSelectionViewDelegate
+extension CitySelectionViewController: UnitSelectionViewDelegate {
+    func didSelectUnit(_ unit: TempUnit) {
+        unitSelectionView.isHidden = true
+        
+        print("Selected unit -", unit.unitLabel)
+    }
+    
+    func showUnitInfo() {
+        unitSelectionView.isHidden = true
+
+        let webViewController = WebViewController()
+        if let url = URL(string: "https://meteoinfo.ru/t-scale") {
+            webViewController.open(url)
+        }
+        webViewController.title = "Info"
+        let navigationController = BaseNavigationController(rootViewController: webViewController)
+        present(navigationController, animated: true)
     }
 }

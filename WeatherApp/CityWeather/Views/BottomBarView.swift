@@ -9,11 +9,13 @@ import UIKit
 import SnapKit
 
 final class BottomBarView: BaseView {
+    // MARK: Properties
     private let deviderView = UIView()
     private let cityListButton = UIButton()
 
     var cityListButtonAction: (() -> Void)?
 
+    // MARK: Lifecycle
     override func setup() {
         super.setup()
 
@@ -26,6 +28,7 @@ final class BottomBarView: BaseView {
         setupCityListButton()
     }
 
+    // MARK: Setup UI
     private func setupDeviderView() {
         addSubview(deviderView)
         deviderView.backgroundColor = .white.withAlphaComponent(0.3)
@@ -44,8 +47,8 @@ final class BottomBarView: BaseView {
             for: .normal
         )
         cityListButton.tintColor = .white
-        cityListButton.addAction(UIAction { _ in
-            self.cityListButtonAction?()
+        cityListButton.addAction(UIAction { [weak self] _ in
+            self?.cityListButtonAction?()
         }, for: .touchUpInside)
 
         cityListButton.snp.makeConstraints { make in
@@ -54,4 +57,6 @@ final class BottomBarView: BaseView {
             make.size.equalTo(40)
         }
     }
+
+    // MARK: Public methods
 }
