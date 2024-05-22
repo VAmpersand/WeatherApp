@@ -8,11 +8,6 @@
 import UIKit
 import SnapKit
 
-protocol UnitSelectionViewDelegate: AnyObject {
-    func didSelectUnit(_ unit: TempUnit)
-    func showUnitInfo()
-}
-
 enum TempUnit: Int, CaseIterable {
     case celsius
     case kelvin
@@ -25,6 +20,11 @@ enum TempUnit: Int, CaseIterable {
         case .kelvin: return "ºK"
         }
     }
+}
+
+protocol UnitSelectionViewDelegate: AnyObject {
+    func didSelectUnit(_ unit: TempUnit)
+    func showUnitInfo()
 }
 
 final class UnitSelectionView: BaseView {
