@@ -40,7 +40,6 @@ final class CitySearchViewController: BaseViewController {
     private func setupTableView() {
         view.addSubview(tableView)
         tableView.backgroundColor = .clear
-        tableView.contentInset.left = 16
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -75,16 +74,23 @@ extension CitySearchViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+
+        let cityName = filteredCityList[indexPath.row]
         let attributedText = NSMutableAttributedString(
-            string: filteredCityList[indexPath.row],
+            string: cityName,
             attributes: [.foregroundColor: UIColor.white.withAlphaComponent(0.5)]
         )
 
-        let queryRange = (filteredCityList[indexPath.row].lowercased() as NSString).range(of: searchQuery)
+        let queryRange = (cityName.lowercased() as NSString).range(of: searchQuery)
         attributedText.addAttributes([.foregroundColor: UIColor.white], range: queryRange)
 
-        cell.backgroundColor = .clear
         cell.textLabel?.attributedText = attributedText
+        cell.imageView?.image = UIImage()
+        cell.backgroundColor = .clear
+
+        let bgColorView = UIView()
+        bgColorView.backgroundColor = .white.withAlphaComponent(0.3)
+        cell.selectedBackgroundView = bgColorView
 
         return cell
     }
@@ -93,6 +99,7 @@ extension CitySearchViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension CitySearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
+        tableView.deselectRow(at: indexPath, animated: true)
+        print(filteredCityList[indexPath.row])
     }
 }
