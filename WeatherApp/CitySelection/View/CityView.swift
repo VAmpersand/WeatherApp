@@ -28,8 +28,6 @@ final class CityView: BaseView {
     private let descriptionLable = UILabel()
     private let tempLimitsLabel = UILabel()
 
-    var tapAction: (() -> Void)? // TODO: - Remove after implement collection
-
     // MARK: Lifecycle
     override func setup() {
         super.setup()
@@ -44,12 +42,6 @@ final class CityView: BaseView {
         setupTitleLabel()
         setupSubitleLabel()
         setupDescriptionLable()
-
-        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapGestureAction))) // TODO: - Remove after implement collection
-    }
-
-    @IBAction private func tapGestureAction() { // TODO: - Remove after implement collection
-        tapAction?()
     }
 
     // MARK: Setup UI

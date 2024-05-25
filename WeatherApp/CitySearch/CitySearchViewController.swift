@@ -12,6 +12,7 @@ final class CitySearchViewController: BaseViewController {
     // MARK: Properties
     private let tableView = UITableView()
 
+    private let cityCellId = "cell"
     private let cityList = [
         "Moscow",
         "Paris",
@@ -29,6 +30,7 @@ final class CitySearchViewController: BaseViewController {
     private var filteredCityList: [String] = []
     private var searchQuery = ""
 
+
     // MARK: Lifecycle
     override func setup() {
         super.setup()
@@ -40,9 +42,9 @@ final class CitySearchViewController: BaseViewController {
     private func setupTableView() {
         view.addSubview(tableView)
         tableView.backgroundColor = .clear
-        tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.delegate = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cityCellId)
 
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
@@ -73,7 +75,7 @@ extension CitySearchViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cityCellId, for: indexPath)
 
         let cityName = filteredCityList[indexPath.row]
         let attributedText = NSMutableAttributedString(
