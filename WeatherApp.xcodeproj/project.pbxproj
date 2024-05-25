@@ -140,6 +140,21 @@
 			path = Application;
 			sourceTree = "<group>";
 		};
+		77C75BFE2BFE33EF00F01A6E /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				77C75BFF2BFE33F600F01A6E /* Extensions */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
+		77C75BFF2BFE33F600F01A6E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		77CED20F2BE6BD6300ABEF2B /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -170,6 +185,7 @@
 		77D4BB6F2BE2829B00056404 /* WeatherApp */ = {
 			isa = PBXGroup;
 			children = (
+				77C75BFE2BFE33EF00F01A6E /* Tools */,
 				77C75BFB2BF8EF3E00F01A6E /* Application */,
 				77C75BFA2BF8EF0800F01A6E /* SupportingFiles */,
 				77C75BF72BF8C5F400F01A6E /* Services */,

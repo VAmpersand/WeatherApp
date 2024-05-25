@@ -9,9 +9,9 @@ import UIKit
 import SnapKit
 
 final class CityWeatherDetailedViewController: BaseViewController {
-    // MARK: - Properties
+    // MARK: Properties
 
-    // MARK: - Lifecycle
+    // MARK: Lifecycle
     override func setup() {
         super.setup()
 
@@ -20,7 +20,7 @@ final class CityWeatherDetailedViewController: BaseViewController {
         setupCloseButton()
     }
 
-    // MARK: - Setup UI
+    // MARK: Setup UI
     func setupNavigationBar(withTitle title: String, andIcon icon: UIImage?) {
         let iconView = UIImageView(image: icon?.withTintColor(.white, renderingMode: .alwaysOriginal))
 
@@ -34,5 +34,5 @@ final class CityWeatherDetailedViewController: BaseViewController {
         navigationItem.titleView = titleStackView
     }
 
-    // MARK: - Public methods
+    // MARK: Public methods
 }

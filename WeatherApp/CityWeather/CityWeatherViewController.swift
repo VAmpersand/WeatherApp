@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class CityWeatherViewController: BaseViewController {
-    // MARK: - Properties
+    // MARK: Properties
     private let backgroundImage = UIImageView()
     private let titleContainer = UIView()
     private let titleView = TitleView()
@@ -18,7 +18,7 @@ final class CityWeatherViewController: BaseViewController {
     private let temporaryContentView = UIView()
     private let showDelailsButton = UIButton()
 
-    // MARK: - Lifecycle
+    // MARK: Lifecycle
     override func setup() {
         super.setup()
         
@@ -33,7 +33,7 @@ final class CityWeatherViewController: BaseViewController {
         setupShowDetailsButton()
     }
 
-    // MARK: - Setup UI
+    // MARK: Setup UI
     private func setupBackgroundImage() {
         view.addSubview(backgroundImage)
         backgroundImage.contentMode = .scaleAspectFill
@@ -95,14 +95,14 @@ final class CityWeatherViewController: BaseViewController {
         showDelailsButton.setTitleColor(.white, for: .normal)
         showDelailsButton.backgroundColor = .white.withAlphaComponent(0.3)
         showDelailsButton.layer.cornerRadius = 5
-        showDelailsButton.addAction(UIAction { _ in
+        showDelailsButton.addAction(UIAction { [weak self] _ in
             let detailsViewController = CityWeatherDetailedViewController()
             let navigationController = BaseNavigationController(rootViewController: detailsViewController)
             detailsViewController.setupNavigationBar(
                 withTitle: "Weather conditions",
                 andIcon: UIImage(systemName: "cloud.sun.fill")
             )
-            self.present(navigationController, animated: true)
+            self?.present(navigationController, animated: true)
         }, for: .touchUpInside)
 
         showDelailsButton.snp.makeConstraints { make in
@@ -111,7 +111,7 @@ final class CityWeatherViewController: BaseViewController {
         }
     }
 
-    // MARK: - Public methods
+    // MARK: Public methods
     func setup(_ data: MOCKData) {
         titleView.setup(data.titleData)
     }

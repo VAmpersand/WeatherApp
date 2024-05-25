@@ -20,6 +20,7 @@ extension TitleView {
 }
 
 final class TitleView: BaseView {
+    // MARK: Properties
     private let stackView = UIStackView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
@@ -27,6 +28,7 @@ final class TitleView: BaseView {
     private let descriptionLable = UILabel()
     private let tempLimitsLabel = UILabel()
     
+    // MARK: Lifecycle
     override func setup() {
         super.setup()
 
@@ -37,16 +39,8 @@ final class TitleView: BaseView {
         setupDescriptionLable()
         setupTempLimitsLabel()
     }
-
-    func setup(_ model: InputModel) {
-        titleLabel.text = model.title
-        subtitleLabel.text = model.subtitle
-        subtitleLabel.isHidden = model.subtitle == nil
-        tempLabel.text = "\(model.currentTemp)º"
-        descriptionLable.text = model.description
-        tempLimitsLabel.text = "Max: \(model.maxTemp)º, min: \(model.minTemp)º"
-    }
     
+    // MARK: Setup UI
     private func setupStackView() {
         addSubview(stackView)
         stackView.axis = .vertical
@@ -92,5 +86,15 @@ final class TitleView: BaseView {
         tempLimitsLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         tempLimitsLabel.textAlignment = .center
         tempLimitsLabel.textColor = .white
+    }
+
+    // MARK: Public methods
+    func setup(_ model: InputModel) {
+        titleLabel.text = model.title
+        subtitleLabel.text = model.subtitle
+        subtitleLabel.isHidden = model.subtitle == nil
+        tempLabel.text = "\(model.currentTemp)º"
+        descriptionLable.text = model.description
+        tempLimitsLabel.text = "Max: \(model.maxTemp)º, min: \(model.minTemp)º"
     }
 }
