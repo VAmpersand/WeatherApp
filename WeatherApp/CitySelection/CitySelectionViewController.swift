@@ -10,8 +10,10 @@ import SnapKit
 
 final class CitySelectionViewController: BaseViewController {
     // MARK: Properties
-    private let tempStackView = UIStackView()
+    private let tableView = UITableView()
     private let unitSelectionView = UnitSelectionView()
+
+    private let dataSource = MOCKData.data
 
     // MARK: Lifecycle
     override func setup() {
@@ -22,9 +24,9 @@ final class CitySelectionViewController: BaseViewController {
 
         setupNavigationBar()
         setupUnitSelectionView()
-        presentCityWeather(with: MOCKData.data.first, animated: false)
+        setupTableView()
 
-        setupTempStackView()
+        presentCityWeather(with: dataSource.first, animated: false)
     }
 
     override func viewDidLayoutSubviews() {
@@ -74,29 +76,24 @@ final class CitySelectionViewController: BaseViewController {
         }
     }
 
-    private func setupTempStackView() {
-        view.addSubview(tempStackView)
-        tempStackView.axis = .vertical
-        tempStackView.spacing = 12
+    private func setupTableView() {
+        view.addSubview(tableView)
+        tableView.backgroundColor = .clear
+        tableView.estimatedRowHeight = 120
+        tableView.separatorStyle = .none
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
 
-        MOCKData.data.forEach { data in
-            let cityView = CityView()
-            cityView.setup(CityView.InputModel(title: data.titleData.title,
-                                               subtitle: data.titleData.subtitle,
-                                               currentTemp: data.titleData.currentTemp,
-                                               description: data.titleData.description,
-                                               minTemp: data.titleData.minTemp,
-                                               maxTemp: data.titleData.maxTemp))
-
-            cityView.tapAction = { [weak self] in self?.presentCityWeather(with: data) }
-            tempStackView.addArrangedSubview(cityView)
-        }
-
-        tempStackView.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(16)
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.horizontalEdges.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview()
         }
     }
 
+    // MARK: Private methods
     private func presentCityWeather(with data: MOCKData?, animated: Bool = true) {
         let viewController = CityWeatherViewController()
         viewController.modalPresentationStyle = .fullScreen
@@ -138,5 +135,44 @@ extension CitySelectionViewController: UnitSelectionViewDelegate {
         webViewController.title = "Info"
         let navigationController = BaseNavigationController(rootViewController: webViewController)
         present(navigationController, animated: true)
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension CitySelectionViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        dataSource.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+
+        let data = dataSource[indexPath.row]
+        let cityView = CityView() // TODO: - Temp implementation. Need use custom cell
+        cityView.setup(CityView.InputModel(title: data.titleData.title,
+                                           subtitle: data.titleData.subtitle,
+                                           currentTemp: data.titleData.currentTemp,
+                                           description: data.titleData.description,
+                                           minTemp: data.titleData.minTemp,
+                                           maxTemp: data.titleData.maxTemp))
+
+
+        cell.addSubview(cityView)
+        cityView.snp.makeConstraints { make in
+            make.top.horizontalEdges.equalToSuperview()
+            make.bottom.equalToSuperview().inset(12)
+        }
+
+        cell.selectionStyle = .none
+        cell.backgroundColor = .clear
+
+        return cell
+    }
+}
+
+// MARK: - UITableViewDelegate
+extension CitySelectionViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        presentCityWeather(with: dataSource[indexPath.row])
     }
 }
