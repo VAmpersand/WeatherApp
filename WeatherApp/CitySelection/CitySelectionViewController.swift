@@ -96,10 +96,8 @@ final class CitySelectionViewController: BaseViewController {
     // MARK: Private methods
     private func presentCityWeather(with data: MOCKData?, animated: Bool = true) {
         let viewController = CityWeatherViewController()
+        viewController.viewModel = CityWeatherViewModel(with: data)
         viewController.modalPresentationStyle = .fullScreen
-        if let data {
-            viewController.setup(data)
-        }
         present(viewController, animated: animated)
     }
 

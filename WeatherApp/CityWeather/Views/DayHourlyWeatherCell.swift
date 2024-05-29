@@ -1,5 +1,5 @@
 //
-//  DayHourlyWeatherView.swift
+//  DayHourlyWeatherCell.swift
 //  WeatherApp
 //
 //  Created by Viktor Prikolota on 01.05.2024.
@@ -8,15 +8,15 @@
 import UIKit
 import SnapKit
 
-extension DayHourlyWeatherView {
+extension DayHourlyWeatherCell {
     struct InputModel {
         let hour: String
-        let icon: UIImage?
+        let imageSystemName: String
         let temp: Int
     }
 }
 
-final class DayHourlyWeatherView: BaseView {
+final class DayHourlyWeatherCell: BaseTableViewCell {
     // MARK: Properties
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
@@ -31,11 +31,14 @@ final class DayHourlyWeatherView: BaseView {
 
     // MARK: Setup UI
     private func setupScrollView() {
-        addSubview(scrollView)
+        contentView.addSubview(scrollView)
         scrollView.showsHorizontalScrollIndicator = false
+        scrollView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
         scrollView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.verticalEdges.equalToSuperview().inset(12)
+            make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(100)
         }
     }
 
@@ -51,6 +54,8 @@ final class DayHourlyWeatherView: BaseView {
 
     // MARK: Public methods
     func setup(_ models: [InputModel]) {
+        stackView.subviews.forEach { $0.removeFromSuperview() }
+        
         models.enumerated().forEach { index, model in
             let view = HourWeatherView()
             view.setup(model)
@@ -63,7 +68,7 @@ final class DayHourlyWeatherView: BaseView {
 }
 
 // MARK: - HourWeatherView
-extension DayHourlyWeatherView {
+extension DayHourlyWeatherCell {
     final class HourWeatherView: UIView {
         // MARK: Properties
         private let stackView = UIStackView()
@@ -94,6 +99,7 @@ extension DayHourlyWeatherView {
 
             stackView.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
+                make.width.equalTo(40)
             }
         }
 
@@ -119,7 +125,7 @@ extension DayHourlyWeatherView {
         // MARK: Public methods
         func setup(_ model: InputModel) {
             hourLabel.text = model.hour
-            iconView.image = model.icon
+            iconView.image = UIImage(systemName: model.imageSystemName)?.withRenderingMode(.alwaysOriginal)
             tempLabel.text = "\(model.temp)º"
         }
     }

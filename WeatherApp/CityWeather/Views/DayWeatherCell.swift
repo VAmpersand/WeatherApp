@@ -1,5 +1,5 @@
 //
-//  DayWeatherView.swift
+//  DayWeatherCell.swift
 //  WeatherApp
 //
 //  Created by Viktor Prikolota on 04.05.2024.
@@ -8,10 +8,10 @@
 import UIKit
 import SnapKit
 
-extension DayWeatherView {
+extension DayWeatherCell {
     struct InputModel {
         let title: String
-        let image: UIImage?
+        let imageSystemName: String
         let minTemp: Double
         let maxTemp: Double
         let minDayTemp: Double
@@ -20,7 +20,7 @@ extension DayWeatherView {
     }
 }
 
-final class DayWeatherView: BaseView {
+final class DayWeatherCell: BaseTableViewCell {
     // MARK: Properties
     private let titleLabel = UILabel()
     private let iconView = UIImageView()
@@ -32,8 +32,9 @@ final class DayWeatherView: BaseView {
     override func setup() {
         super.setup()
 
-        snp.makeConstraints { make in
+        contentView.snp.makeConstraints { make in
             make.height.equalTo(50)
+            make.width.equalTo(UIScreen.main.bounds.width - 40)
         }
 
         setupTitleLabel()
@@ -45,18 +46,19 @@ final class DayWeatherView: BaseView {
 
     // MARK: Setup UI
     private func setupTitleLabel() {
-        addSubview(titleLabel)
+        contentView.addSubview(titleLabel)
         titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         titleLabel.textColor = .white
 
         titleLabel.snp.makeConstraints { make in
-            make.leading.centerY.equalToSuperview()
+            make.leading.equalToSuperview().inset(16)
+            make.verticalEdges.equalToSuperview().inset(12)
             make.width.equalTo(60)
         }
     }
 
     private func setupIconView() {
-        addSubview(iconView)
+        contentView.addSubview(iconView)
         iconView.contentMode = .scaleAspectFit
 
         iconView.snp.makeConstraints { make in
@@ -66,7 +68,7 @@ final class DayWeatherView: BaseView {
     }
 
     private func setupMinTempLable() {
-        addSubview(minTempLabel)
+        contentView.addSubview(minTempLabel)
         minTempLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         minTempLabel.textAlignment = .center
         minTempLabel.textColor = .white.withAlphaComponent(0.7)
@@ -79,7 +81,7 @@ final class DayWeatherView: BaseView {
     }
 
     private func setupTempLimitsView() {
-        addSubview(tempLimitsView)
+        contentView.addSubview(tempLimitsView)
 
         tempLimitsView.snp.makeConstraints { make in
             make.leading.equalTo(minTempLabel.snp.trailing).offset(16)
@@ -88,14 +90,15 @@ final class DayWeatherView: BaseView {
     }
 
     private func setupMaxTempLabel() {
-        addSubview(maxTempLabel)
+        contentView.addSubview(maxTempLabel)
         maxTempLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         maxTempLabel.textAlignment = .center
         maxTempLabel.textColor = .white
 
         maxTempLabel.snp.makeConstraints { make in
             make.leading.equalTo(tempLimitsView.snp.trailing).offset(16)
-            make.trailing.centerY.equalToSuperview()
+            make.trailing.equalToSuperview().inset(16)
+            make.centerY.equalToSuperview()
             make.width.equalTo(30)
         }
     }
@@ -103,7 +106,7 @@ final class DayWeatherView: BaseView {
     // MARK: Public methods
     func setup(_ inputModel: InputModel) {
         titleLabel.text = inputModel.title
-        iconView.image = inputModel.image
+        iconView.image = UIImage(systemName: inputModel.imageSystemName)?.withRenderingMode(.alwaysOriginal)
         minTempLabel.text = "\(Int(inputModel.minDayTemp))º"
         maxTempLabel.text = "\(Int(inputModel.maxDayTemp))º"
         tempLimitsView.setup(inputModel)
@@ -111,7 +114,7 @@ final class DayWeatherView: BaseView {
 }
 
 // MARK: - TempLimitsView
-extension DayWeatherView {
+extension DayWeatherCell {
     final class TempLimitsView: BaseView {
         // MARK: Properties
         private let tempLimitsView = UIView()
