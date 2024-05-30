@@ -51,16 +51,6 @@ final class CityWeatherViewModel: CityWeatherViewModelInput {
     }
 
     private func prepareDataSource(from weatherData: MOCKData) {
-
-        output?.dataSource = [
-            Section(icon: nil,
-                    title: nil,
-                    items: [
-                        .title(data: TitleCell.InputModel(imageSystemName: "clock", title: "Hourly forecast")),
-                        .dayHourlyWeather(data: weatherData.dayHourlyData.data)
-                    ])
-        ]
-
         var forecastItems: [Item] = weatherData.dayData.map { .dayWeather(data: $0) }
         forecastItems.insert(
             .title(data: TitleCell.InputModel(imageSystemName: "calendar",
@@ -68,8 +58,17 @@ final class CityWeatherViewModel: CityWeatherViewModelInput {
             at: 0
         )
 
-        output?.dataSource.append(Section(icon: nil,
-                                          title: nil,
-                                          items: forecastItems))
+        output?.dataSource = [
+            Section(icon: nil,
+                    title: nil,
+                    items: [
+                        .title(data: TitleCell.InputModel(imageSystemName: "clock",
+                                                          title: "Hourly forecast")),
+                        .dayHourlyWeather(data: weatherData.dayHourlyData.data)
+                    ]),
+            Section(icon: nil,
+                    title: nil,
+                    items: forecastItems)
+        ]
     }
 }

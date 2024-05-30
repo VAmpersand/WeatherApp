@@ -32,16 +32,20 @@ final class DayWeatherCell: BaseTableViewCell {
     override func setup() {
         super.setup()
 
-        contentView.snp.makeConstraints { make in
-            make.height.equalTo(50)
-            make.width.equalTo(UIScreen.main.bounds.width - 40)
-        }
-
         setupTitleLabel()
         setupIconView()
         setupMinTempLable()
         setupTempLimitsView()
         setupMaxTempLabel()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        contentView.snp.makeConstraints { make in
+            make.height.equalTo(50)
+            make.width.equalToSuperview()
+        }
     }
 
     // MARK: Setup UI
