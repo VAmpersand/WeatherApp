@@ -9,11 +9,22 @@ import UIKit
 import SnapKit
 
 final class CitySelectionViewController: BaseViewController {
+    typealias Section = CitySelectionViewModel.Section
+    typealias Item = CitySelectionViewModel.Item
+
     // MARK: Properties
-    private let tableView = UITableView()
+    private var collectionView: UICollectionView!
     private let unitSelectionView = UnitSelectionView()
 
-    private let dataSource = MOCKData.data
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
+    private var snapshot: NSDiffableDataSourceSnapshot<Section, Item>! = nil
+
+    var viewModel: CitySelectionViewModelInput?
+    var sections: [Section] = [] {
+        didSet {
+            reloadDataSource()
+        }
+    }
 
     // MARK: Lifecycle
     override func setup() {
@@ -22,11 +33,15 @@ final class CitySelectionViewController: BaseViewController {
         view.backgroundColor = .black
         title = "Weather"
 
+        viewModel?.output = self
+        viewModel?.viewDidLoad()
+
         setupNavigationBar()
         setupUnitSelectionView()
-        setupTableView()
+        setupCollectionView()
 
-        presentCityWeather(with: dataSource.first, animated: false)
+        createDataSource()
+        reloadDataSource()
     }
 
     override func viewDidLayoutSubviews() {
@@ -76,24 +91,110 @@ final class CitySelectionViewController: BaseViewController {
         }
     }
 
-    private func setupTableView() {
-        view.addSubview(tableView)
-        tableView.backgroundColor = .clear
-        tableView.estimatedRowHeight = 120
-        tableView.separatorStyle = .none
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    private func setupCollectionView() {
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
 
-        tableView.snp.makeConstraints { make in
+        view.addSubview(collectionView)
+        collectionView.backgroundColor = .clear
+        collectionView.delegate = self
+
+        collectionView.registerCell(CityViewCell.self)
+        collectionView.registerView(InfoFooter.self, ofKind: UICollectionView.elementKindSectionFooter)
+
+        collectionView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
-            make.horizontalEdges.equalToSuperview().inset(16)
-            make.bottom.equalToSuperview()
+            make.bottom.horizontalEdges.equalToSuperview()
         }
     }
 
     // MARK: Private methods
+    func reloadDataSource() {
+        snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot.appendSections(sections)
+
+        for section in sections {
+            snapshot.appendItems(section.items, toSection: section)
+        }
+
+        dataSource?.apply(snapshot)
+    }
+
+    private func createDataSource() {
+        dataSource = UICollectionViewDiffableDataSource<Section, Item>(
+            collectionView: collectionView
+        ) { [weak self] collectionView, indexPath, itemIdentifier in
+            guard let self else { return UICollectionViewCell() }
+
+            let item = sections[indexPath.section].items[indexPath.row]
+            let cell = collectionView.dequeueCell(CityViewCell.self, for: indexPath)
+            cell.setup(item.titleData)
+            return cell
+        }
+
+        dataSource?.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+            guard let self else { return nil }
+
+            switch kind {
+            case UICollectionView.elementKindSectionFooter:
+                let sectionFooter = collectionView.dequeueView(InfoFooter.self, ofKind: kind, for: indexPath)
+                sectionFooter.setup(sections[indexPath.section].footerAttributedString)
+                sectionFooter.linkAction = { [self] url in
+                    self.presentWebView(with: url, title: "Meteorological data")
+                }
+                return sectionFooter
+            default:
+                return nil
+            }
+        }
+    }
+
+    private func createCompositionalLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewCompositionalLayout { [self] sectionIndex, _ in
+            return createCitySection()
+        }
+
+        let config = UICollectionViewCompositionalLayoutConfiguration()
+        config.interSectionSpacing = 20
+
+        layout.configuration = config
+
+        return layout
+    }
+
+    private func createCitySection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .fractionalHeight(1)
+        )
+        let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
+
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .absolute(120)
+        )
+        let layoutGroup = NSCollectionLayoutGroup.vertical(
+            layoutSize: groupSize,
+            subitems: [layoutItem]
+        )
+
+        let footerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .estimated(50)
+        )
+        let layoutSectionFooter = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: footerSize,
+            elementKind: UICollectionView.elementKindSectionFooter,
+            alignment: .bottom
+        )
+
+        let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
+        layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
+        layoutSection.boundarySupplementaryItems = [layoutSectionFooter]
+        layoutSection.interGroupSpacing = 12
+
+        return layoutSection
+    }
+
     private func presentCityWeather(with data: MOCKData?, animated: Bool = true) {
         let viewController = CityWeatherViewController()
         viewController.viewModel = CityWeatherViewModel(with: data)
@@ -126,51 +227,19 @@ extension CitySelectionViewController: UnitSelectionViewDelegate {
     func showUnitInfo() {
         unitSelectionView.isHidden = true
 
-        let webViewController = WebViewController()
-        if let url = URL(string: "https://meteoinfo.ru/t-scale") {
-            webViewController.open(url)
-        }
-        webViewController.title = "Info"
-        let navigationController = BaseNavigationController(rootViewController: webViewController)
-        present(navigationController, animated: true)
+        presentWebView(with: URL(string: "https://meteoinfo.ru/t-scale"),
+                       title: "Info")
     }
 }
 
-// MARK: - UITableViewDataSource
-extension CitySelectionViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        dataSource.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-
-        let data = dataSource[indexPath.row]
-        let cityView = CityView() // TODO: - Temp implementation. Need use custom cell
-        cityView.setup(CityView.InputModel(title: data.titleData.title,
-                                           subtitle: data.titleData.subtitle,
-                                           currentTemp: data.titleData.currentTemp,
-                                           description: data.titleData.description,
-                                           minTemp: data.titleData.minTemp,
-                                           maxTemp: data.titleData.maxTemp))
-
-
-        cell.addSubview(cityView)
-        cityView.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalToSuperview()
-            make.bottom.equalToSuperview().inset(12)
-        }
-
-        cell.selectionStyle = .none
-        cell.backgroundColor = .clear
-
-        return cell
+// MARK: - UICollectionViewDelegate
+extension CitySelectionViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        presentCityWeather(with: sections[indexPath.section].items[indexPath.row])
     }
 }
 
-// MARK: - UITableViewDelegate
-extension CitySelectionViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        presentCityWeather(with: dataSource[indexPath.row])
-    }
+// MARK: - CitySelectionViewModelOutput
+extension CitySelectionViewController: CitySelectionViewModelOutput {
+
 }

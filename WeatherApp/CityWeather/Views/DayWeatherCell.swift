@@ -8,18 +8,6 @@
 import UIKit
 import SnapKit
 
-extension DayWeatherCell {
-    struct InputModel {
-        let title: String
-        let imageSystemName: String
-        let minTemp: Double
-        let maxTemp: Double
-        let minDayTemp: Double
-        let maxDayTemp: Double
-        let currentTemt: Double?
-    }
-}
-
 final class DayWeatherCell: BaseTableViewCell {
     // MARK: Properties
     private let titleLabel = UILabel()
@@ -108,7 +96,7 @@ final class DayWeatherCell: BaseTableViewCell {
     }
 
     // MARK: Public methods
-    func setup(_ inputModel: InputModel) {
+    func setup(_ inputModel: DayData) {
         titleLabel.text = inputModel.title
         iconView.image = UIImage(systemName: inputModel.imageSystemName)?.withRenderingMode(.alwaysOriginal)
         minTempLabel.text = "\(Int(inputModel.minDayTemp))º"
@@ -169,7 +157,7 @@ extension DayWeatherCell {
         }
 
         // MARK: Public methods
-        func setup(_ model: InputModel) {
+        func setup(_ model: DayData) {
             let tempDiff = model.maxTemp - model.minTemp
             let minOffset = abs(model.minTemp - model.minDayTemp) / tempDiff
             let maxOffset = abs(model.maxTemp - model.maxDayTemp) / tempDiff

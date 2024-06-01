@@ -27,6 +27,14 @@ class BaseViewController: UIViewController {
         )
     }
 
+    func presentWebView(with url: URL?, title: String?) {
+        let webViewController = WebViewController()
+        if let url { webViewController.open(url) }
+        webViewController.title = title
+        let navigationController = BaseNavigationController(rootViewController: webViewController)
+        present(navigationController, animated: true)
+    }
+
     @IBAction private func closeAction() {
         dismiss(animated: true)
     }

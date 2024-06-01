@@ -7,14 +7,36 @@
 
 import UIKit
 
-typealias TitleData = TitleView.InputModel
-typealias DayHourlyData = DayHourlyWeatherCell.InputModel
-typealias DayData = DayWeatherCell.InputModel
-
-struct MOCKData {
+struct MOCKData: Hashable {
     let titleData: TitleData
-    let dayHourlyData: (description: String, data: [DayHourlyData])
+    let dayHourlyDescription: String
+    let dayHourlyData: [DayHourlyData]
     let dayData: [DayData]
+}
+
+struct TitleData: Hashable {
+    let title: String
+    let subtitle: String?
+    let currentTemp: Int
+    let description: String
+    let minTemp: Int
+    let maxTemp: Int
+}
+
+struct DayHourlyData: Hashable {
+    let hour: String
+    let imageSystemName: String
+    let temp: Int
+}
+
+struct DayData: Hashable {
+    let title: String
+    let imageSystemName: String
+    let minTemp: Double
+    let maxTemp: Double
+    let minDayTemp: Double
+    let maxDayTemp: Double
+    let currentTemt: Double?
 }
 
 extension MOCKData {
@@ -27,39 +49,39 @@ extension MOCKData {
                                           description: "Clear sky",
                                           minTemp: 15,
                                           maxTemp: 22),
-                     dayHourlyData: (description: "Cloudy weather from 9:00 to 19:00, mostly sunny weather is expected at 12:00",
-                                     data: [
-                                        DayHourlyData(hour: "Now",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "09",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "10",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "11",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "12",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "13",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "14",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "15",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "16",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "17",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                     ]),
+                     dayHourlyDescription: "Cloudy weather from 9:00 to 19:00, mostly sunny weather is expected at 12:00",
+                     dayHourlyData:[
+                        DayHourlyData(hour: "Now",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "09",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "10",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "11",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "12",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "13",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "14",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "15",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "16",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "17",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                     ],
                      dayData: [
                         DayData(title: "Today",
                                 imageSystemName: "sun.max.fill",
@@ -125,39 +147,39 @@ extension MOCKData {
                                           description: "Clear sky",
                                           minTemp: 15,
                                           maxTemp: 22),
-                     dayHourlyData: (description: "Cloudy weather from 9:00 to 19:00, mostly sunny weather is expected at 12:00",
-                                     data: [
-                                        DayHourlyData(hour: "Now",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "09",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "10",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "11",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "12",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "13",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "14",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "15",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "16",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "17",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                     ]),
+                     dayHourlyDescription: "Cloudy weather from 9:00 to 19:00, mostly sunny weather is expected at 12:00",
+                     dayHourlyData:[
+                        DayHourlyData(hour: "Now",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "09",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "10",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "11",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "12",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "13",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "14",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "15",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "16",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "17",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                     ],
                      dayData: [
                         DayData(title: "Today",
                                 imageSystemName: "sun.max.fill",
@@ -223,39 +245,39 @@ extension MOCKData {
                                           description: "Clear sky",
                                           minTemp: 15,
                                           maxTemp: 22),
-                     dayHourlyData: (description: "Cloudy weather from 9:00 to 19:00, mostly sunny weather is expected at 12:00",
-                                     data: [
-                                        DayHourlyData(hour: "Now",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "09",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "10",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "11",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "12",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "13",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "14",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "15",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "16",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                        DayHourlyData(hour: "17",
-                                                      imageSystemName: "sun.max.fill",
-                                                      temp: 15),
-                                     ]),
+                     dayHourlyDescription: "Cloudy weather from 9:00 to 19:00, mostly sunny weather is expected at 12:00",
+                     dayHourlyData:[
+                        DayHourlyData(hour: "Now",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "09",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "10",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "11",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "12",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "13",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "14",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "15",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "16",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                        DayHourlyData(hour: "17",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                     ],
                      dayData: [
                         DayData(title: "Today",
                                 imageSystemName: "sun.max.fill",

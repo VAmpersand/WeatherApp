@@ -16,7 +16,7 @@ protocol CityWeatherViewModelInput {
 protocol CityWeatherViewModelOutput: AnyObject {
     var dataSource: [CityWeatherViewModel.Section] { get set }
 
-    func setupTitle(with data: TitleView.InputModel)
+    func setupTitle(with data: TitleData)
 }
 
 extension CityWeatherViewModel {
@@ -28,8 +28,8 @@ extension CityWeatherViewModel {
 
     enum Item {
         case title(data: TitleCell.InputModel)
-        case dayHourlyWeather(data: [DayHourlyWeatherCell.InputModel])
-        case dayWeather(data: DayWeatherCell.InputModel)
+        case dayHourlyWeather(data: [DayHourlyData])
+        case dayWeather(data: DayData)
     }
 }
 
@@ -51,24 +51,24 @@ final class CityWeatherViewModel: CityWeatherViewModelInput {
     }
 
     private func prepareDataSource(from weatherData: MOCKData) {
-        var forecastItems: [Item] = weatherData.dayData.map { .dayWeather(data: $0) }
-        forecastItems.insert(
-            .title(data: TitleCell.InputModel(imageSystemName: "calendar",
-                                              title: "Forecast for \(weatherData.dayData.count) days")),
-            at: 0
-        )
-
-        output?.dataSource = [
-            Section(icon: nil,
-                    title: nil,
-                    items: [
-                        .title(data: TitleCell.InputModel(imageSystemName: "clock",
-                                                          title: "Hourly forecast")),
-                        .dayHourlyWeather(data: weatherData.dayHourlyData.data)
-                    ]),
-            Section(icon: nil,
-                    title: nil,
-                    items: forecastItems)
-        ]
+//        var forecastItems: [Item] = weatherData.dayData.map { .dayWeather(data: $0) }
+//        forecastItems.insert(
+//            .title(data: TitleCell.InputModel(imageSystemName: "calendar",
+//                                              title: "Forecast for \(weatherData.dayData.count) days")),
+//            at: 0
+//        )
+//
+//        output?.dataSource = [
+//            Section(icon: nil,
+//                    title: nil,
+//                    items: [
+//                        .title(data: TitleCell.InputModel(imageSystemName: "clock",
+//                                                          title: "Hourly forecast")),
+//                        .dayHourlyWeather(data: weatherData.dayHourlyData.data)
+//                    ]),
+//            Section(icon: nil,
+//                    title: nil,
+//                    items: forecastItems)
+//        ]
     }
 }

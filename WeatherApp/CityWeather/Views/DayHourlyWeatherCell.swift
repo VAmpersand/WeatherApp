@@ -8,14 +8,6 @@
 import UIKit
 import SnapKit
 
-extension DayHourlyWeatherCell {
-    struct InputModel {
-        let hour: String
-        let imageSystemName: String
-        let temp: Int
-    }
-}
-
 final class DayHourlyWeatherCell: BaseTableViewCell {
     // MARK: Properties
     private let scrollView = UIScrollView()
@@ -53,7 +45,7 @@ final class DayHourlyWeatherCell: BaseTableViewCell {
     }
 
     // MARK: Public methods
-    func setup(_ models: [InputModel]) {
+    func setup(_ models: [DayHourlyData]) {
         stackView.subviews.forEach { $0.removeFromSuperview() }
         
         models.enumerated().forEach { index, model in
@@ -123,7 +115,7 @@ extension DayHourlyWeatherCell {
         }
 
         // MARK: Public methods
-        func setup(_ model: InputModel) {
+        func setup(_ model: DayHourlyData) {
             hourLabel.text = model.hour
             iconView.image = UIImage(systemName: model.imageSystemName)?.withRenderingMode(.alwaysOriginal)
             tempLabel.text = "\(model.temp)º"

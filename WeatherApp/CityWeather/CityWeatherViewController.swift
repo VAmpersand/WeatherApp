@@ -164,7 +164,7 @@ extension CityWeatherViewController: UITableViewDelegate {
 
 // MARK: - CityWeatherViewModelOutput
 extension CityWeatherViewController: CityWeatherViewModelOutput {
-    func setupTitle(with data: TitleView.InputModel) {
+    func setupTitle(with data: TitleData) {
         titleView.setup(data)
     }
 
