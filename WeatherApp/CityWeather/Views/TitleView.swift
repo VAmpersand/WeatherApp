@@ -8,7 +8,6 @@
 import UIKit
 import SnapKit
 
-
 final class TitleView: BaseView {
     // MARK: Properties
     private let stackView = UIStackView()

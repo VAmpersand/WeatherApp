@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class DayWeatherCell: BaseTableViewCell {
+final class DayWeatherCell: BaseCollectionViewCell {
     // MARK: Properties
     private let titleLabel = UILabel()
     private let iconView = UIImageView()
@@ -27,30 +27,20 @@ final class DayWeatherCell: BaseTableViewCell {
         setupMaxTempLabel()
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        contentView.snp.makeConstraints { make in
-            make.height.equalTo(50)
-            make.width.equalToSuperview()
-        }
-    }
-
     // MARK: Setup UI
     private func setupTitleLabel() {
-        contentView.addSubview(titleLabel)
+        addSubview(titleLabel)
         titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         titleLabel.textColor = .white
 
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(16)
-            make.verticalEdges.equalToSuperview().inset(12)
+            make.leading.centerY.equalToSuperview()
             make.width.equalTo(60)
         }
     }
 
     private func setupIconView() {
-        contentView.addSubview(iconView)
+        addSubview(iconView)
         iconView.contentMode = .scaleAspectFit
 
         iconView.snp.makeConstraints { make in
@@ -60,7 +50,7 @@ final class DayWeatherCell: BaseTableViewCell {
     }
 
     private func setupMinTempLable() {
-        contentView.addSubview(minTempLabel)
+        addSubview(minTempLabel)
         minTempLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         minTempLabel.textAlignment = .center
         minTempLabel.textColor = .white.withAlphaComponent(0.7)
@@ -73,7 +63,7 @@ final class DayWeatherCell: BaseTableViewCell {
     }
 
     private func setupTempLimitsView() {
-        contentView.addSubview(tempLimitsView)
+        addSubview(tempLimitsView)
 
         tempLimitsView.snp.makeConstraints { make in
             make.leading.equalTo(minTempLabel.snp.trailing).offset(16)
@@ -82,14 +72,14 @@ final class DayWeatherCell: BaseTableViewCell {
     }
 
     private func setupMaxTempLabel() {
-        contentView.addSubview(maxTempLabel)
+        addSubview(maxTempLabel)
         maxTempLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         maxTempLabel.textAlignment = .center
         maxTempLabel.textColor = .white
 
         maxTempLabel.snp.makeConstraints { make in
             make.leading.equalTo(tempLimitsView.snp.trailing).offset(16)
-            make.trailing.equalToSuperview().inset(16)
+            make.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
             make.width.equalTo(30)
         }

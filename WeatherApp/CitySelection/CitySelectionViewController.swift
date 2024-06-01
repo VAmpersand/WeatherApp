@@ -42,6 +42,8 @@ final class CitySelectionViewController: BaseViewController {
 
         createDataSource()
         reloadDataSource()
+
+        presentCityWeather(with: sections.first?.items.first, animated: false)
     }
 
     override func viewDidLayoutSubviews() {
@@ -95,6 +97,7 @@ final class CitySelectionViewController: BaseViewController {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
 
         view.addSubview(collectionView)
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.backgroundColor = .clear
         collectionView.delegate = self
 
@@ -153,11 +156,6 @@ final class CitySelectionViewController: BaseViewController {
             return createCitySection()
         }
 
-        let config = UICollectionViewCompositionalLayoutConfiguration()
-        config.interSectionSpacing = 20
-
-        layout.configuration = config
-
         return layout
     }
 
@@ -195,7 +193,7 @@ final class CitySelectionViewController: BaseViewController {
         return layoutSection
     }
 
-    private func presentCityWeather(with data: MOCKData?, animated: Bool = true) {
+    private func presentCityWeather(with data: CityWeatherData?, animated: Bool = true) {
         let viewController = CityWeatherViewController()
         viewController.viewModel = CityWeatherViewModel(with: data)
         viewController.modalPresentationStyle = .fullScreen

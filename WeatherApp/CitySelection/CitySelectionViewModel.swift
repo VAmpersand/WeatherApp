@@ -25,9 +25,9 @@ extension CitySelectionViewModel {
 }
 
 final class CitySelectionViewModel: CitySelectionViewModelInput {
-    typealias Item = MOCKData
+    typealias Item = CityWeatherData
 
-    private let weatherData = MOCKData.data
+    private let weatherData = CityWeatherData.mockData
 
     weak var output: CitySelectionViewModelOutput?
 
