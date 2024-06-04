@@ -8,21 +8,18 @@
 import UIKit
 import SnapKit
 
-extension TitleCell {
-    struct InputModel {
-        let imageSystemName: String
-        let title: String
-    }
-}
-
-final class TitleCell: BaseTableViewCell {
+final class WeatherViewHeader: BaseCollectionReusableView {
     // MARK: Properties
     private let iconView = UIImageView()
     private let titleLabel = UILabel()
+//    private let descriptionLabel = UILabel() // TODO: - Add descriptionLabel
 
     // MARK: Lifecycle
     override func setup() {
         super.setup()
+
+        backgroundColor = .waLightBlue
+        layer.cornerRadius = 16
 
         setupIconView()
         setupTitleLabel()
@@ -30,7 +27,7 @@ final class TitleCell: BaseTableViewCell {
 
     // MARK: Setup UI
     private func setupIconView() {
-        contentView.addSubview(iconView)
+        addSubview(iconView)
         iconView.contentMode = .scaleAspectFit
         iconView.tintColor = .white.withAlphaComponent(0.5)
 
@@ -41,7 +38,7 @@ final class TitleCell: BaseTableViewCell {
     }
 
     private func setupTitleLabel() {
-        contentView.addSubview(titleLabel)
+        addSubview(titleLabel)
         titleLabel.font = UIFont.systemFont(ofSize: 15, weight: .bold)
         titleLabel.textColor = .white.withAlphaComponent(0.5)
 
@@ -52,9 +49,9 @@ final class TitleCell: BaseTableViewCell {
     }
 
     // MARK: Public methods
-    func setup(_ inputModel: InputModel) {
-        iconView.image = UIImage(systemName: inputModel.imageSystemName)?
+    func setup(imageSystemName: String, title: String, description: String?) {
+        iconView.image = UIImage(systemName: imageSystemName)?
             .applyingSymbolConfiguration(.init(weight: .bold))
-        titleLabel.text = inputModel.title.uppercased()
+        titleLabel.text = title.uppercased()
     }
 }

@@ -16,15 +16,18 @@ final class CityWeatherViewController: BaseViewController {
     private let backgroundImage = UIImageView()
     private let titleContainer = UIView()
     private let titleView = TitleView()
-    private let tableView = UITableView(frame: .zero, style: .insetGrouped)
+    private var collectionView: UICollectionView!
     private let bottomBarView = BottomBarView()
 
-
-    private let temporaryContentView = UIView()
-    private let showDelailsButton = UIButton()
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
+    private var snapshot: NSDiffableDataSourceSnapshot<Section, Item>! = nil
 
     var viewModel: CityWeatherViewModelInput!
-    var dataSource: [Section] = []
+    var sections: [Section] = [] {
+        didSet {
+            reloadDataSource()
+        }
+    }
 
     // MARK: Lifecycle
     override func setup() {
@@ -32,14 +35,17 @@ final class CityWeatherViewController: BaseViewController {
         
         view.backgroundColor = .white
 
+        viewModel.output = self
+        viewModel.viewDidLoad()
+
         setupBackgroundImage()
         setupTitleContainer()
         setupTitleView()
-        setupTableView()
+        setupCollectionView()
         setupBottomBarView()
 
-        viewModel.output = self
-        viewModel.viewDidLoad()
+        createDataSource()
+        reloadDataSource()
     }
 
     // MARK: Setup UI
@@ -72,21 +78,22 @@ final class CityWeatherViewController: BaseViewController {
         }
     }
 
-    private func setupTableView() {
-        view.addSubview(tableView)
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.showsVerticalScrollIndicator = false
-        tableView.backgroundColor = .clear
-        tableView.dataSource = self
-        tableView.delegate = self
+    private func setupCollectionView() {
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout())
+        
+        view.addSubview(collectionView)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.backgroundColor = .clear
+        collectionView.delegate = self
 
-        tableView.registerCell(TitleCell.self)
-        tableView.registerCell(DayHourlyWeatherCell.self)
-        tableView.registerCell(DayWeatherCell.self)
+        collectionView.registerView(WeatherViewHeader.self, ofKind: UICollectionView.elementKindSectionHeader)
+        collectionView.registerCell(HourWeatherCell.self)
+        collectionView.registerCell(DayWeatherCell.self)
 
-        tableView.snp.makeConstraints { make in
+        collectionView.snp.makeConstraints { make in
             make.top.equalTo(titleContainer.snp.bottom)
-            make.horizontalEdges.equalToSuperview()
+            make.horizontalEdges.equalToSuperview().inset(16)
         }
     }
 
@@ -99,11 +106,11 @@ final class CityWeatherViewController: BaseViewController {
         bottomBarView.snp.makeConstraints { make in
             make.bottom.horizontalEdges.equalToSuperview()
             make.top.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(60)
-            make.top.equalTo(tableView.snp.bottom)
+            make.top.equalTo(collectionView.snp.bottom)
         }
     }
 
-    private func presentCityWeatherDetailedViewController(with weatherData: MOCKData?) {
+    private func presentCityWeatherDetailedViewController(with weatherData: CityWeatherData?) {
         let detailsViewController = CityWeatherDetailedViewController()
         let navigationController = BaseNavigationController(rootViewController: detailsViewController)
         detailsViewController.setupNavigationBar(
@@ -114,47 +121,158 @@ final class CityWeatherViewController: BaseViewController {
     }
 
     // MARK: Public methods
-    func setup(_ data: MOCKData) {
+    func reloadDataSource() {
+        snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot.appendSections(sections)
+
+        for section in sections {
+            snapshot.appendItems(section.items, toSection: section)
+        }
+
+        dataSource?.apply(snapshot)
+    }
+
+    private func createDataSource() {
+        dataSource = UICollectionViewDiffableDataSource<Section, Item>(
+            collectionView: collectionView
+        ) { [weak self] collectionView, indexPath, itemIdentifier in
+            guard let self else { return UICollectionViewCell() }
+
+            let item = sections[indexPath.section].items[indexPath.row]
+            switch item {
+            case .dayHourlyWeather(let data):
+                let cell = collectionView.dequeueCell(HourWeatherCell.self, for: indexPath)
+                cell.setup(data)
+                return cell
+            case .dayWeather(let data):
+                let cell = collectionView.dequeueCell(DayWeatherCell.self, for: indexPath)
+                cell.setup(data)
+                return cell
+            }
+        }
+
+        dataSource?.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+            guard let self else { return nil }
+
+            let section = sections[indexPath.section]
+            switch kind {
+            case UICollectionView.elementKindSectionHeader:
+                let sectionHeader = collectionView.dequeueView(WeatherViewHeader.self, ofKind: kind, for: indexPath)
+                sectionHeader.setup(imageSystemName: section.imageSystemName,
+                                    title: section.title,
+                                    description: section.description)
+                return sectionHeader
+            default:
+                return nil
+            }
+        }
+    }
+
+    private func createCompositionalLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewCompositionalLayout { [self] sectionIndex, _ in
+            if sectionIndex == 0 {
+                return createDayHourlySection()
+            } else {
+                return createDaySection()
+            }
+        }
+
+        let config = UICollectionViewCompositionalLayoutConfiguration()
+        config.interSectionSpacing = 12
+
+        layout.configuration = config
+        layout.register(WeatherViewBackground.self, forDecorationViewOfKind: WeatherViewBackground.identifire)
+
+        return layout
+    }
+
+    private func createDayHourlySection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .estimated(60),
+            heightDimension: .absolute(120)
+        )
+        let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
+
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: layoutItem.layoutSize.widthDimension,
+            heightDimension: .absolute(120)
+        )
+        let layoutGroup = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitems: [layoutItem]
+        )
+
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .estimated(50)
+        )
+        let layoutSectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+        layoutSectionHeader.pinToVisibleBounds = true
+
+        let decorationItem = NSCollectionLayoutDecorationItem.background(
+            elementKind: WeatherViewBackground.identifire
+        )
+
+        let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
+        layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
+        layoutSection.decorationItems = [decorationItem]
+        layoutSection.orthogonalScrollingBehavior = .continuous
+        layoutSection.contentInsets.bottom = 5
+
+        return layoutSection
+    }
+
+    private func createDaySection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .fractionalHeight(1)
+        )
+        let layoutItem = NSCollectionLayoutItem(layoutSize: itemSize)
+
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .absolute(50)
+        )
+        let layoutGroup = NSCollectionLayoutGroup.vertical(
+            layoutSize: groupSize,
+            subitems: [layoutItem]
+        )
+        layoutGroup.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
+
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .estimated(40)
+        )
+        let layoutSectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+        layoutSectionHeader.pinToVisibleBounds = true
+
+        let decorationItem = NSCollectionLayoutDecorationItem.background(
+            elementKind: WeatherViewBackground.identifire
+        )
+
+        let layoutSection = NSCollectionLayoutSection(group: layoutGroup)
+        layoutSection.boundarySupplementaryItems = [layoutSectionHeader]
+        layoutSection.decorationItems = [decorationItem]
+
+        return layoutSection
+    }
+
+    // MARK: Public methods
+    func setup(_ data: CityWeatherData) {
         titleView.setup(data.titleData)
     }
 }
 
-// MARK: - UITableViewDataSource
-extension CityWeatherViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        dataSource.count
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        dataSource[section].items.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = dataSource[indexPath.section].items[indexPath.row]
-
-        let cell: UITableViewCell
-
-        switch item {
-        case .title(let data):
-            cell = tableView.dequeue(TitleCell.self, for: indexPath)
-            (cell as? TitleCell)?.setup(data)
-        case .dayHourlyWeather(let data):
-            cell = tableView.dequeue(DayHourlyWeatherCell.self, for: indexPath)
-            (cell as? DayHourlyWeatherCell)?.setup(data)
-        case .dayWeather(let data):
-            cell = tableView.dequeue(DayWeatherCell.self, for: indexPath)
-            (cell as? DayWeatherCell)?.setup(data)
-        }
-
-        cell.selectionStyle = .none
-        cell.backgroundColor = .waLightBlue.withAlphaComponent(0.9)
-
-        return cell
-    }
-}
-
 // MARK: - UITableViewDelegate
-extension CityWeatherViewController: UITableViewDelegate {
+extension CityWeatherViewController: UICollectionViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -164,11 +282,11 @@ extension CityWeatherViewController: UITableViewDelegate {
 
 // MARK: - CityWeatherViewModelOutput
 extension CityWeatherViewController: CityWeatherViewModelOutput {
-    func setupTitle(with data: TitleView.InputModel) {
+    func setupTitle(with data: TitleData) {
         titleView.setup(data)
     }
 
     func reloadData() {
-        tableView.reloadData()
+        reloadDataSource()
     }
 }
