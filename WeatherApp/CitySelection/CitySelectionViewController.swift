@@ -10,7 +10,7 @@ import SnapKit
 
 final class CitySelectionViewController: BaseViewController {
     typealias Section = CitySelectionViewModel.Section
-    typealias Item = CitySelectionViewModel.Item
+    typealias Item = CityWeatherData
 
     // MARK: Properties
     private var collectionView: UICollectionView!

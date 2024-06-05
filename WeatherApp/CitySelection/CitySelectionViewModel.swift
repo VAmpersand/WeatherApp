@@ -19,24 +19,26 @@ protocol CitySelectionViewModelOutput: AnyObject {
 
 extension CitySelectionViewModel {
     struct Section: Hashable {
-        let items: [Item]
+        let items: [CityWeatherData]
         let footerAttributedString: NSAttributedString?
     }
 }
 
 final class CitySelectionViewModel: CitySelectionViewModelInput {
-    typealias Item = CityWeatherData
-
-    private let weatherData = CityWeatherData.mockData
-
     weak var output: CitySelectionViewModelOutput?
+    private var weatherProvider: WeatherProvider?
 
-    func viewDidLoad() {
-        prepareSections()
+    init(weatherProvider: WeatherProvider) {
+        self.weatherProvider = weatherProvider
+        self.weatherProvider?.delegate = self
     }
 
-    private func prepareSections() {
-        output?.sections = [Section(items: weatherData, footerAttributedString: createFooterString())]
+    func viewDidLoad() {
+        prepareSections(with: weatherProvider?.weatherDataCache ?? [])
+    }
+
+    private func prepareSections(with data: [CityWeatherData]) {
+        output?.sections = [Section(items: data, footerAttributedString: createFooterString())]
     }
 
     private func createFooterString() -> NSAttributedString {
@@ -52,5 +54,12 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
         }
 
         return attributedString
+    }
+}
+
+// MARK: - WeatherProviderDelegate
+extension CitySelectionViewModel: WeatherProviderDelegate {
+    func setCurrentWeather(_ data: [CityWeatherData]) {
+        prepareSections(with: data)
     }
 }
