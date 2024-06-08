@@ -15,9 +15,9 @@ final class APIEndpointProvider {
         var format = PropertyListSerialization.PropertyListFormat.xml
 
         guard let path = Bundle.main.path(forResource: "Config", ofType: "plist"),
-              let file = FileManager.default.contents(atPath: path),
+              let data = FileManager.default.contents(atPath: path),
               let config = try? PropertyListSerialization.propertyList(
-                from: file,
+                from: data,
                 options: .mutableContainersAndLeaves,
                 format: &format
               ) as? [String: Any] else {

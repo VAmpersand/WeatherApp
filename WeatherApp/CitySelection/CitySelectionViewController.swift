@@ -61,6 +61,7 @@ final class CitySelectionViewController: BaseViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
 
         let citySearchViewController = CitySearchViewController()
+        citySearchViewController.viewModel = CitySearchViewModel(cityListProvider: CityListProviderImpl())
         let searchController = UISearchController(searchResultsController: citySearchViewController)
         searchController.searchResultsUpdater = citySearchViewController
         searchController.searchBar.searchTextField.placeholder = "Search city or airport"

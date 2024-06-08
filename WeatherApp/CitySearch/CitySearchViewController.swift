@@ -13,29 +13,21 @@ final class CitySearchViewController: BaseViewController {
     private let tableView = UITableView()
 
     private let cityCellId = "cell"
-    private let cityList = [
-        "Moscow",
-        "Paris",
-        "Lonon",
-        "Buenos Aires",
-        "Tokio",
-        "Beijing",
-        "Delhi",
-        "Berlin",
-        "Oslo",
-        "Minsk",
-        "Bangkok"
-    ] // MOCK data
 
-    private var filteredCityList: [String] = []
-    private var searchQuery = ""
-
+    var viewModel: CitySearchViewModelInput!
+    var cityList: [CityData] = [] {
+        didSet {
+            tableView.reloadData()
+        }
+    }
 
     // MARK: Lifecycle
     override func setup() {
         super.setup()
 
         setupTableView()
+
+        viewModel.output = self
     }
 
     // MARK: Setup UI
@@ -59,34 +51,23 @@ final class CitySearchViewController: BaseViewController {
 extension CitySearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let query = searchController.searchBar.searchTextField.text else { return }
-        self.searchQuery = query.lowercased()
+        let searchQuery = query.lowercased()
 
         view.backgroundColor = .black.withAlphaComponent(searchQuery.isEmpty ? 0.5 : 1)
-
-        filteredCityList = cityList.filter { $0.lowercased().contains(searchQuery) }
-        tableView.reloadData()
+        viewModel.filterCity(with: searchQuery)
     }
 }
 
 // MARK: - UITableViewDataSource
 extension CitySearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        filteredCityList.count
+        cityList.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cityCellId, for: indexPath)
 
-        let cityName = filteredCityList[indexPath.row]
-        let attributedText = NSMutableAttributedString(
-            string: cityName,
-            attributes: [.foregroundColor: UIColor.white.withAlphaComponent(0.5)]
-        )
-
-        let queryRange = (cityName.lowercased() as NSString).range(of: searchQuery)
-        attributedText.addAttributes([.foregroundColor: UIColor.white], range: queryRange)
-
-        cell.textLabel?.attributedText = attributedText
+        cell.textLabel?.attributedText = viewModel.getAttributedTitle(for: indexPath)
         cell.imageView?.image = UIImage()
         cell.backgroundColor = .clear
 
@@ -102,6 +83,11 @@ extension CitySearchViewController: UITableViewDataSource {
 extension CitySearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        print(filteredCityList[indexPath.row])
+        print(cityList[indexPath.row])
     }
+}
+
+// MARK: - CitySearchViewModelOutput
+extension CitySearchViewController: CitySearchViewModelOutput {
+
 }
