@@ -11,7 +11,7 @@ struct WeatherResponse: Decodable {
     let id: Int?
     let name: String?
     let coordinate: Coordinate
-    let timezone: TimeZone
+    let timeZone: TimeZone
     let system: SystemData
     let weather: [WeatherData]
     let main: MainData
@@ -26,7 +26,7 @@ struct WeatherResponse: Decodable {
         case id
         case name
         case coordinate = "coord"
-        case timezone
+        case timeZone = "timezone"
         case system = "sys"
         case weather
         case main
@@ -55,9 +55,9 @@ struct WeatherResponse: Decodable {
         self.date = Date(timeIntervalSince1970: dateUnix)
 
         self.system = try container.decode(WeatherResponse.SystemData.self, forKey: .system)
-        let timezoneUnix = try container.decode(Int.self, forKey: .timezone)
-        
-        self.timezone = TimeZone(secondsFromGMT: timezoneUnix) ?? TimeZone.current
+        let timeZoneUnix = try container.decode(Int.self, forKey: .timeZone)
+
+        self.timeZone = TimeZone(secondsFromGMT: timeZoneUnix) ?? TimeZone.current
         self.visibility = try container.decode(Int.self, forKey: .visibility)
     }
 }

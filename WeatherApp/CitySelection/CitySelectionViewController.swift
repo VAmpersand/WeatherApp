@@ -36,7 +36,6 @@ final class CitySelectionViewController: BaseViewController {
         title = "Weather"
 
         viewModel?.output = self
-        viewModel?.viewDidLoad()
 
         setupNavigationBar()
         setupUnitSelectionView()
@@ -45,7 +44,7 @@ final class CitySelectionViewController: BaseViewController {
         createDataSource()
         reloadDataSource()
 
-        presentCityWeather(with: sections.first?.items.first, animated: false)
+        presentCityWeather(with: sections.first?.items.first ?? .emptyData, animated: false)
     }
 
     override func viewDidLayoutSubviews() {
@@ -199,9 +198,7 @@ final class CitySelectionViewController: BaseViewController {
     private func presentCityWeather(with data: CityWeatherData?, animated: Bool = true) {
         let viewController = CityWeatherViewController()
         let viewModel = CityWeatherViewModel()
-        if let data {
-            viewModel.setupWeather(data)
-        }
+        if let data { viewModel.setup(data) }
         viewController.viewModel = viewModel
         viewController.modalPresentationStyle = .fullScreen
         present(viewController, animated: animated) { [weak self] in
@@ -249,9 +246,9 @@ extension CitySelectionViewController: UICollectionViewDelegate {
 
 // MARK: - CitySelectionViewModelOutput
 extension CitySelectionViewController: CitySelectionViewModelOutput {
-    func setupForecast(_ forecast: CityWeatherData) {
+    func setup(_ weatherData: CityWeatherData) {
         DispatchQueue.main.async { [self] in
-            (presentedViewController as? CityWeatherViewController)?.viewModel.setupWeather(forecast)
+            (presentedViewController as? CityWeatherViewController)?.viewModel.setup(weatherData)
         }
     }
 }

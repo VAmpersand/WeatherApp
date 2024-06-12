@@ -10,7 +10,7 @@ import UIKit
 protocol CityWeatherViewModelInput {
     var output: CityWeatherViewModelOutput? { get set }
 
-    func setupWeather(_ weatherData: CityWeatherData)
+    func setup(_ weatherData: CityWeatherData)
     func viewDidLoad()
 }
 
@@ -46,7 +46,7 @@ final class CityWeatherViewModel: CityWeatherViewModelInput {
 
     weak var output: CityWeatherViewModelOutput?
 
-    func setupWeather(_ weatherData: CityWeatherData) {
+    func setup(_ weatherData: CityWeatherData) {
         self.weatherData = weatherData
 
         viewDidLoad()
@@ -59,15 +59,16 @@ final class CityWeatherViewModel: CityWeatherViewModelInput {
     }
 
     private func prepareDataSource() {
+        let forecast = weatherData.forecastData
         output?.sections = [
             Section(imageSystemName: "clock",
                     title: "Hourly forecast",
-                    description: weatherData.dayHourlyDescription,
-                    items: weatherData.dayHourlyData.map { .dayHourlyWeather(data: $0) }),
+                    description: forecast?.dayHourlyDescription,
+                    items: forecast?.dayHourlyData.map { .dayHourlyWeather(data: $0) } ?? []),
             Section(imageSystemName: "calendar",
-                    title: "Forecast for \(weatherData.dayData.count) days",
+                    title: "Forecast for \(forecast?.dayData.count ?? 0) days",
                     description: nil,
-                    items: weatherData.dayData.map { .dayWeather(data: $0) })
+                    items: forecast?.dayData.map { .dayWeather(data: $0) } ?? [])
         ]
     }
 }

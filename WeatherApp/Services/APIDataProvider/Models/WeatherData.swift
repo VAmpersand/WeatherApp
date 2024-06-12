@@ -25,9 +25,7 @@ struct WeatherData: Decodable {
         self.id = try container.decode(Int.self, forKey: .id)
         self.main = try container.decode(String.self, forKey: .main)
         self.description = try container.decode(String.self, forKey: .description)
-
-        let iconID = try container.decode(String.self, forKey: .iconID)
-        self.icon = Icon(rawValue: iconID) ?? .clearSkyDay
+        self.icon = try container.decode(WeatherData.Icon.self, forKey: .iconID)
     }
 }
 

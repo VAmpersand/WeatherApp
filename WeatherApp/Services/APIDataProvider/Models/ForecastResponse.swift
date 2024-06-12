@@ -10,7 +10,7 @@ import Foundation
 struct ForecastResponse: Decodable {
     let count: Int
     let list: [ItemData]
-    let city: CityData?
+    let city: CityData
 
     enum CodingKeys: String, CodingKey {
         case count = "cnt"
@@ -21,7 +21,7 @@ struct ForecastResponse: Decodable {
 
 extension ForecastResponse {
     struct ItemData: Decodable {
-        let dateUnix: Int
+        let date: Date
         let main: MainData
         let weather: [WeatherData]
         let clouds: CloudsData
@@ -42,6 +42,22 @@ extension ForecastResponse {
             case snow
             case system = "sys"
         }
+
+        init(from decoder: any Decoder) throws {
+            let container: KeyedDecodingContainer<CodingKeys> = try decoder.container(keyedBy: CodingKeys.self)
+
+            let dateUnix = try container.decode(Double.self, forKey: .dateUnix)
+            self.date = Date(timeIntervalSince1970: dateUnix)
+
+            self.main = try container.decode(MainData.self, forKey: .main)
+            self.weather = try container.decode([WeatherData].self, forKey: .weather)
+            self.clouds = try container.decode(CloudsData.self, forKey: .clouds)
+            self.visibility = try container.decode(Int.self, forKey: .visibility)
+            self.probOfPrecipitation = try container.decode(Double.self, forKey: .probOfPrecipitation)
+            self.rain = try container.decodeIfPresent(ForecastResponse.PrecipitationData.self, forKey: .rain)
+            self.snow = try container.decodeIfPresent(ForecastResponse.PrecipitationData.self, forKey: .snow)
+            self.system = try container.decode(ForecastResponse.SystemData.self, forKey: .system)
+        }
     }
 
     struct PrecipitationData: Decodable {
@@ -53,7 +69,12 @@ extension ForecastResponse {
     }
 
     struct SystemData: Decodable {
-        let partOfDay: String
+        enum PartOfDay: String, Decodable {
+            case day = "d"
+            case night = "n"
+        }
+
+        let partOfDay: PartOfDay
 
         enum CodingKeys: String, CodingKey {
             case partOfDay = "pod"
@@ -66,7 +87,7 @@ extension ForecastResponse {
         let coordinate: Coordinate
         let country: String
         let population: Int
-        let timezone: TimeZone
+        let timeZone: TimeZone
         let sunriseDate: Date
         let sunsetDate: Date
 
@@ -76,7 +97,7 @@ extension ForecastResponse {
             case coordinate = "coord"
             case country
             case population
-            case timezone
+            case timeZone = "timezone"
             case sunriseUnix = "sunrise"
             case sunsetUnix = "sunset"
         }
@@ -89,8 +110,8 @@ extension ForecastResponse {
             self.country = try container.decode(String.self, forKey: .country)
             self.population = try container.decode(Int.self, forKey: .population)
 
-            let timezoneValue = try container.decode(Int.self, forKey: .timezone)
-            self.timezone = TimeZone(secondsFromGMT: timezoneValue) ?? TimeZone.current
+            let timeZoneValue = try container.decode(Int.self, forKey: .timeZone)
+            self.timeZone = TimeZone(secondsFromGMT: timeZoneValue) ?? TimeZone.current
 
             let sunriseUnix = try container.decode(Double.self, forKey: .sunriseUnix)
             self.sunriseDate = Date(timeIntervalSince1970: sunriseUnix)
