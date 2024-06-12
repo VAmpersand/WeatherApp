@@ -8,6 +8,7 @@
 import UIKit
 
 struct CityWeatherData: Hashable {
+    let id: Int
     let titleData: TitleViewData
     let dayHourlyDescription: String
     let dayHourlyData: [DayHourlyViewData]
@@ -49,7 +50,8 @@ struct DayViewData: Hashable {
 
 extension CityWeatherData {
     static var emptyData: CityWeatherData {
-        CityWeatherData(titleData: TitleViewData(title: "--",
+        CityWeatherData(id: .currentPlaceId,
+                        titleData: TitleViewData(title: "--",
                                                  subtitle: "--",
                                                  currentTemp: "--",
                                                  description: "--",

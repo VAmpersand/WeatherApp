@@ -10,7 +10,7 @@ import Foundation
 struct ForecastResponse: Decodable {
     let count: Int
     let list: [ItemData]
-    let city: CityData
+    let city: CityData?
 
     enum CodingKeys: String, CodingKey {
         case count = "cnt"

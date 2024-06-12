@@ -29,6 +29,8 @@ final class CityWeatherViewController: BaseViewController {
         }
     }
 
+    var cityID: Int?
+
     // MARK: Lifecycle
     override func setup() {
         super.setup()

@@ -19,15 +19,12 @@ final class CitySelectionViewController: BaseViewController {
     private var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
     private var snapshot: NSDiffableDataSourceSnapshot<Section, Item>! = nil
 
+    private var presentedCityID: Int?
+
     var viewModel: CitySelectionViewModelInput?
     var sections: [Section] = [] {
         didSet {
             reloadDataSource()
-
-            DispatchQueue.main.async { [self] in
-                (presentedViewController as? CityWeatherViewController)?
-                    .viewModel.updateWeather(sections.first?.items.first ?? CityWeatherData.emptyData)
-            }
         }
     }
 
@@ -201,9 +198,15 @@ final class CitySelectionViewController: BaseViewController {
 
     private func presentCityWeather(with data: CityWeatherData?, animated: Bool = true) {
         let viewController = CityWeatherViewController()
-        viewController.viewModel = CityWeatherViewModel(with: data)
+        let viewModel = CityWeatherViewModel()
+        if let data {
+            viewModel.setupWeather(data)
+        }
+        viewController.viewModel = viewModel
         viewController.modalPresentationStyle = .fullScreen
-        present(viewController, animated: animated)
+        present(viewController, animated: animated) { [weak self] in
+            self?.viewModel?.getForecastForCity(with: data?.id)
+        }
     }
 
     @IBAction private func rightBarButtonAction() {
@@ -239,11 +242,16 @@ extension CitySelectionViewController: UnitSelectionViewDelegate {
 // MARK: - UICollectionViewDelegate
 extension CitySelectionViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presentCityWeather(with: sections[indexPath.section].items[indexPath.row])
+        let selectedCity = sections[indexPath.section].items[indexPath.row]
+        presentCityWeather(with: selectedCity)
     }
 }
 
 // MARK: - CitySelectionViewModelOutput
 extension CitySelectionViewController: CitySelectionViewModelOutput {
-
+    func setupForecast(_ forecast: CityWeatherData) {
+        DispatchQueue.main.async { [self] in
+            (presentedViewController as? CityWeatherViewController)?.viewModel.setupWeather(forecast)
+        }
+    }
 }

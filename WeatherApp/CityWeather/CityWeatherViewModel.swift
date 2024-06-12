@@ -10,7 +10,7 @@ import UIKit
 protocol CityWeatherViewModelInput {
     var output: CityWeatherViewModelOutput? { get set }
 
-    func updateWeather(_ weatherData: CityWeatherData)
+    func setupWeather(_ weatherData: CityWeatherData)
     func viewDidLoad()
 }
 
@@ -42,15 +42,11 @@ extension CityWeatherViewModel {
 }
 
 final class CityWeatherViewModel: CityWeatherViewModelInput {
-    private var weatherData: CityWeatherData!
+    private var weatherData: CityWeatherData = .emptyData
 
     weak var output: CityWeatherViewModelOutput?
 
-    init(with weatherData: CityWeatherData?) {
-        self.weatherData = weatherData ?? CityWeatherData.emptyData
-    }
-
-    func updateWeather(_ weatherData: CityWeatherData) {
+    func setupWeather(_ weatherData: CityWeatherData) {
         self.weatherData = weatherData
 
         viewDidLoad()

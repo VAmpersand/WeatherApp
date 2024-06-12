@@ -11,10 +11,13 @@ protocol CitySelectionViewModelInput {
     var output: CitySelectionViewModelOutput? { get set }
 
     func viewDidLoad()
+    func getForecastForCity(with id: Int?)
 }
 
 protocol CitySelectionViewModelOutput: AnyObject {
     var sections: [CitySelectionViewModel.Section] { get set }
+
+    func setupForecast(_ forecast: CityWeatherData)
 }
 
 extension CitySelectionViewModel {
@@ -35,6 +38,116 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
 
     func viewDidLoad() {
         prepareSections(with: weatherProvider?.weatherDataCache ?? [])
+    }
+
+    func getForecastForCity(with id: Int?) {
+        guard let id else { return }
+        weatherProvider?.getForecastForCity(with: id) { [weak self] forecast in
+
+            let cityForecast = CityWeatherData(
+                id: id,
+                titleData: TitleViewData(title: "Current palce",
+                                         subtitle: "BUENOS AIRES",
+                                         currentTemp: "19",
+                                         description: "Clear sky",
+                                         minTemp: "15",
+                                         maxTemp: "22"),
+                dayHourlyDescription: "Cloudy weather from 9:00 to 19:00, mostly sunny weather is expected at 12:00",
+                dayHourlyData:[
+                    DayHourlyViewData(hour: "Now Now Now",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                    DayHourlyViewData(hour: "09",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                    DayHourlyViewData(hour: "10",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                    DayHourlyViewData(hour: "11",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                    DayHourlyViewData(hour: "12",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                    DayHourlyViewData(hour: "13",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                    DayHourlyViewData(hour: "14",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                    DayHourlyViewData(hour: "15",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                    DayHourlyViewData(hour: "16",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                    DayHourlyViewData(hour: "17",
+                                      imageSystemName: "sun.max.fill",
+                                      temp: 15),
+                ],
+                dayData: [
+                    DayViewData(title: "Today",
+                                imageSystemName: "sun.max.fill",
+                                minTemp: 9,
+                                maxTemp: 22,
+                                minDayTemp: 11,
+                                maxDayTemp: 20,
+                                currentTemt: 15),
+                    DayViewData(title: "SU",
+                                imageSystemName: "sun.max.fill",
+                                minTemp: 9,
+                                maxTemp: 22,
+                                minDayTemp: 11,
+                                maxDayTemp: 20,
+                                currentTemt: 15),
+                    DayViewData(title: "MO",
+                                imageSystemName: "sun.max.fill",
+                                minTemp: 9,
+                                maxTemp: 22,
+                                minDayTemp: 11,
+                                maxDayTemp: 20,
+                                currentTemt: 15),
+                    DayViewData(title: "TU",
+                                imageSystemName: "sun.max.fill",
+                                minTemp: 9,
+                                maxTemp: 22,
+                                minDayTemp: 11,
+                                maxDayTemp: 20,
+                                currentTemt: 15),
+                    DayViewData(title: "WE",
+                                imageSystemName: "sun.max.fill",
+                                minTemp: 9,
+                                maxTemp: 22,
+                                minDayTemp: 11,
+                                maxDayTemp: 20,
+                                currentTemt: 15),
+                    DayViewData(title: "TH",
+                                imageSystemName: "sun.max.fill",
+                                minTemp: 9,
+                                maxTemp: 22,
+                                minDayTemp: 11,
+                                maxDayTemp: 20,
+                                currentTemt: 15),
+                    DayViewData(title: "FR",
+                                imageSystemName: "sun.max.fill",
+                                minTemp: 9,
+                                maxTemp: 22,
+                                minDayTemp: 11,
+                                maxDayTemp: 20,
+                                currentTemt: 15),
+                    DayViewData(title: "SA",
+                                imageSystemName: "sun.max.fill",
+                                minTemp: 9,
+                                maxTemp: 22,
+                                minDayTemp: 11,
+                                maxDayTemp: 20,
+                                currentTemt: 15),
+                ])
+            self?.output?.setupForecast(cityForecast)
+
+        } errorHandler: { error in
+            print(#function, error.description)
+        }
     }
 
     private func prepareSections(with data: [CityWeatherData]) {
