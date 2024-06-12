@@ -86,11 +86,11 @@ final class DayWeatherCell: BaseCollectionViewCell {
     }
 
     // MARK: Public methods
-    func setup(_ inputModel: DayData) {
+    func setup(_ inputModel: DayViewData) {
         titleLabel.text = inputModel.title
         iconView.image = UIImage(systemName: inputModel.imageSystemName)?.withRenderingMode(.alwaysOriginal)
-        minTempLabel.text = "\(Int(inputModel.minDayTemp))º"
-        maxTempLabel.text = "\(Int(inputModel.maxDayTemp))º"
+        minTempLabel.text = inputModel.minDayTemp.formatedTemp()
+        maxTempLabel.text = inputModel.maxDayTemp.formatedTemp()
         tempLimitsView.setup(inputModel)
     }
 }
@@ -147,7 +147,7 @@ extension DayWeatherCell {
         }
 
         // MARK: Public methods
-        func setup(_ model: DayData) {
+        func setup(_ model: DayViewData) {
             let tempDiff = model.maxTemp - model.minTemp
             let minOffset = abs(model.minTemp - model.minDayTemp) / tempDiff
             let maxOffset = abs(model.maxTemp - model.maxDayTemp) / tempDiff

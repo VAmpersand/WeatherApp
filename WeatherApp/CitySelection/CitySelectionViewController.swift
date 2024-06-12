@@ -23,6 +23,11 @@ final class CitySelectionViewController: BaseViewController {
     var sections: [Section] = [] {
         didSet {
             reloadDataSource()
+
+            DispatchQueue.main.async { [self] in
+                (presentedViewController as? CityWeatherViewController)?
+                    .viewModel.updateWeather(sections.first?.items.first ?? CityWeatherData.emptyData)
+            }
         }
     }
 

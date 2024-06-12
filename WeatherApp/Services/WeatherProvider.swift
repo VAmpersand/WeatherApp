@@ -31,18 +31,15 @@ final class WeatherProviderImpl: WeatherProvider {
     }
 
     func sceneWillEnterForeground() {
-//        delegate?.setCurrentWeather(CityWeatherData.mockData)
-//
-//        weatherDataCache = CityWeatherData.mockData
-
         let coord = Coordinate(lat: -34.603722, lon: -58.381592)
         getWeather(for: coord)
-        getForecast(for: coord)
+//        getForecast(for: coord)
     }
 
     private func getCityWeather(for id: Int) {
         dataProvider.getData(for: .weather(id: id)) { (weather: WeatherResponse) in
             print("Weather", weather)
+            
         } errorHandler: { error in
             print(#function, error.description)
         }
@@ -57,8 +54,26 @@ final class WeatherProviderImpl: WeatherProvider {
     }
 
     private func getWeather(for coord: Coordinate) {
-        dataProvider.getData(for: .coordWeather(lat: coord.lat, lon: coord.lon)) { (weather: WeatherResponse) in
-            print("Weather", weather)
+        dataProvider.getData(for: .coordWeather(lat: coord.lat, lon: coord.lon)) { [weak self] (weather: WeatherResponse) in
+            guard let self else { return }
+
+            let weatherData = CityWeatherData( // TODO: Added logic for city list
+                titleData: TitleViewData(
+                    title: "Current palce",
+                    subtitle: weather.name,
+                    currentTemp: weather.main.temp.formatedTemp(),
+                    description: weather.weather.first?.main ?? "",
+                    minTemp: weather.main.tempMax.formatedTemp(),
+                    maxTemp: weather.main.tempMin.formatedTemp()
+                ),
+                dayHourlyDescription: weather.weather.first?.description ?? "",
+                dayHourlyData: [],
+                dayData: []
+            )
+            delegate?.setCurrentWeather([weatherData])
+
+            weatherDataCache = [weatherData]
+
         } errorHandler: { error in
             print(#function, error.description)
         }

@@ -78,12 +78,12 @@ final class TitleView: BaseView {
     }
 
     // MARK: Public methods
-    func setup(_ model: TitleData) {
+    func setup(_ model: TitleViewData) {
         titleLabel.text = model.title
         subtitleLabel.text = model.subtitle
         subtitleLabel.isHidden = model.subtitle == nil
-        tempLabel.text = "\(model.currentTemp)º"
+        tempLabel.text = model.currentTemp
         descriptionLable.text = model.description
-        tempLimitsLabel.text = "Max: \(model.maxTemp)º, min: \(model.minTemp)º"
+        tempLimitsLabel.text = "Max: \(model.maxTemp), min: \(model.minTemp)"
     }
 }

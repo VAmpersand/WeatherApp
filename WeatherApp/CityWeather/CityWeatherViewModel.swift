@@ -10,13 +10,14 @@ import UIKit
 protocol CityWeatherViewModelInput {
     var output: CityWeatherViewModelOutput? { get set }
 
+    func updateWeather(_ weatherData: CityWeatherData)
     func viewDidLoad()
 }
 
 protocol CityWeatherViewModelOutput: AnyObject {
     var sections: [CityWeatherViewModel.Section] { get set }
 
-    func setupTitle(with data: TitleData)
+    func setupTitle(with data: TitleViewData)
 }
 
 extension CityWeatherViewModel {
@@ -28,8 +29,8 @@ extension CityWeatherViewModel {
     }
 
     enum Item: Hashable {
-        case dayHourlyWeather(data: DayHourlyData)
-        case dayWeather(data: DayData)
+        case dayHourlyWeather(data: DayHourlyViewData)
+        case dayWeather(data: DayViewData)
 
         var id: String {
             switch self {
@@ -41,12 +42,18 @@ extension CityWeatherViewModel {
 }
 
 final class CityWeatherViewModel: CityWeatherViewModelInput {
-    private let weatherData: CityWeatherData!
+    private var weatherData: CityWeatherData!
 
     weak var output: CityWeatherViewModelOutput?
 
     init(with weatherData: CityWeatherData?) {
-        self.weatherData = weatherData ?? CityWeatherData.mockData.first
+        self.weatherData = weatherData ?? CityWeatherData.emptyData
+    }
+
+    func updateWeather(_ weatherData: CityWeatherData) {
+        self.weatherData = weatherData
+
+        viewDidLoad()
     }
 
     func viewDidLoad() {

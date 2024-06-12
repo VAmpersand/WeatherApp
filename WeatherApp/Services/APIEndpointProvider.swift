@@ -72,6 +72,7 @@ final class APIEndpointProvider {
         }
 
         url.append(queryItems: [
+            URLQueryItem(name: "units", value: "metric"),
             URLQueryItem(name: "appid", value: appID)
         ])
 
