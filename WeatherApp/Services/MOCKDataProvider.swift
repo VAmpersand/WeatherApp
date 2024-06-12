@@ -10,35 +10,30 @@ import UIKit
 struct CityWeatherData: Hashable {
     let id: Int
     let titleData: TitleViewData
-    let forecastData: CityForecastData?
-}
-
-struct CityForecastData: Hashable {
-    let dayHourlyDescription: String
-    let dayHourlyData: [DayHourlyViewData]
-    let dayData: [DayViewData]
+    let dayHourlyDescription: String?
+    let dayHourlyData: [DayHourlyViewData]?
+    let dayData: [DayViewData]?
 }
 
 struct TitleViewData: Hashable {
     let title: String?
     let subtitle: String?
-    let currentTemp: String
-    let description: String
-    let minTemp: String
-    let maxTemp: String
+    let currentTemp: Double?
+    let description: String?
+    let minTemp: Double?
+    let maxTemp: Double?
 }
 
 struct DayHourlyViewData: Hashable {
-    let id = UUID().uuidString
-    
+    let date: Date
     let title: String
-    let imageSystemName: String
+    let imageSystemName: String?
     let temp: String
 }
 
 struct DayViewData: Hashable {
     let title: String
-    let imageSystemName: String
+    let imageSystemName: String?
     let minTemp: Double
     let maxTemp: Double
     let minDayTemp: Double
@@ -56,11 +51,13 @@ extension CityWeatherData {
             id: .currentPlaceId,
             titleData: TitleViewData(title: "--",
                                      subtitle: "--",
-                                     currentTemp: "--",
+                                     currentTemp: nil,
                                      description: "--",
-                                     minTemp: "--",
-                                     maxTemp: "--"),
-            forecastData: nil
+                                     minTemp: nil,
+                                     maxTemp: nil),
+            dayHourlyDescription: nil,
+            dayHourlyData: nil,
+            dayData: nil
         )
     }
 }

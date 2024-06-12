@@ -82,8 +82,11 @@ final class TitleView: BaseView {
         titleLabel.text = model.title
         subtitleLabel.text = model.subtitle
         subtitleLabel.isHidden = model.subtitle == nil
-        tempLabel.text = model.currentTemp
+        tempLabel.text = model.currentTemp?.formatedTemp()
         descriptionLable.text = model.description
-        tempLimitsLabel.text = "Max: \(model.maxTemp), min: \(model.minTemp)"
+
+        if let maxTemp = model.maxTemp, let minTemp = model.minTemp {
+            tempLimitsLabel.text = "Max: \(maxTemp.formatedTemp()), min: \(minTemp.formatedTemp())"
+        }
     }
 }

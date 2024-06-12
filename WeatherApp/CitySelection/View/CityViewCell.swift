@@ -108,9 +108,12 @@ final class CityViewCell: BaseCollectionViewCell {
         titleLabel.text = data.title
         subtitleLabel.text = data.subtitle
         subtitleLabel.isHidden = data.subtitle == nil
-        tempLabel.text = data.currentTemp
+        tempLabel.text = data.currentTemp?.formatedTemp()
         descriptionLable.text = data.description
-        tempLimitsLabel.text = "Max: \(data.maxTemp), min: \(data.minTemp)"
+
+        if let maxTemp = data.maxTemp, let minTemp = data.minTemp {
+            tempLimitsLabel.text = "Max: \(maxTemp.formatedTemp()), min: \(minTemp.formatedTemp())"
+        }
     }
 }
 

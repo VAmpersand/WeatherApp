@@ -17,10 +17,10 @@ protocol WeatherProviderDelegate: AnyObject {
 
 protocol WeatherProvider {
     var delegate: WeatherProviderDelegate? { get set }
-    
+
     func sceneDidEnterBackground()
     func sceneWillEnterForeground()
-    
+
     func getForecastForCity(with id: Int,
                             completionHandler: @escaping (CityWeatherData) -> Void,
                             errorHandler: ((AppError) -> Void)?)
@@ -30,37 +30,37 @@ final class WeatherProviderImpl: WeatherProvider {
     weak var delegate: WeatherProviderDelegate?
     private let dataProvider = APIDataProvider()
 
-    private var currentPlaceCoord = Coordinate(lat: -48.563568, lon: -130.578311)
+    private var currentPlaceCoord = Coordinate(lat: -20.563568, lon: -50.578311)
 
     private var weatherDataCache: [Int: CityWeatherData] = [:]
     private var weatherCache: [Int: WeatherResponse] = [:]
     private var forecastCache: [Int: ForecastResponse] = [:]
-    
+
     func sceneDidEnterBackground() {
-        
+
     }
-    
+
     func sceneWillEnterForeground() {
         let id = Int.currentPlaceId
-        
+
         getWeatherForCity(with: id) { [weak self] weather in
             guard let self else { return }
-            
+
             weatherCache[id] = weather
-            
-            let weatherData = prepareCityWeatherData(for: id, and: weather)
+
+            let weatherData = prepareCityWeatherData(for: id)
             weatherDataCache[id] = weatherData
             delegate?.setCurrentWeather([weatherData])
         } errorHandler: { error in
             print(#function, error.description)
         }
     }
-    
+
     func getForecastForCity(with id: Int,
                             completionHandler: @escaping (CityWeatherData) -> Void,
                             errorHandler: ((AppError) -> Void)?) {
         if let forecast = forecastCache[id] {
-            let weatherData = prepareCityWeatherData(for: id, and: forecast)
+            let weatherData = prepareCityWeatherData(for: id)
             weatherDataCache[id] = weatherData
             completionHandler(weatherData)
 
@@ -68,12 +68,12 @@ final class WeatherProviderImpl: WeatherProvider {
             let endpount: Endpount = id == .currentPlaceId
                 ? .coordForecast(lat: currentPlaceCoord.lat, lon: currentPlaceCoord.lon)
                 : .forecast(id: id)
-            
+
             dataProvider.getData(for: endpount) { [weak self] (forecast: ForecastResponse) in
                 guard let self else { return }
-                
+
                 forecastCache[id] = forecast
-                let weatherData = prepareCityWeatherData(for: id, and: forecast)
+                let weatherData = prepareCityWeatherData(for: id)
                 weatherDataCache[id] = weatherData
                 completionHandler(weatherData)
 
@@ -89,23 +89,23 @@ private extension WeatherProviderImpl {
                            completionHandler:  @escaping (WeatherResponse) -> Void,
                            errorHandler: ((AppError) -> Void)?) {
         let endpount: Endpount = id == .currentPlaceId
-            ? .coordWeather(lat: currentPlaceCoord.lat, lon: currentPlaceCoord.lon)
-            : .weather(id: id)
-        
+        ? .coordWeather(lat: currentPlaceCoord.lat, lon: currentPlaceCoord.lon)
+        : .weather(id: id)
+
         dataProvider.getData(for: endpount) { [weak self] (weather: WeatherResponse) in
             guard let self, let id = weather.id  else { return }
-            
+
             weatherCache[id] = weather
             completionHandler(weather)
         } errorHandler: { error in
             errorHandler?(error)
         }
     }
-    
+
     func getGroupWeather(for ids: [Int], completionHandler: (ForecastResponse) -> Void, errorHandler: ((AppError) -> Void)?) {
         dataProvider.getData(for: .group(ids: ids)) { [weak self] (weathers: [WeatherResponse]) in
             guard let self else { return }
-            
+
             weathers.forEach { weather in
                 if let id = weather.id {
                     self.weatherCache[id] = weather
@@ -115,171 +115,147 @@ private extension WeatherProviderImpl {
             print(#function, error.description)
         }
     }
-    
-    func prepareCityWeatherData(for id: Int, and weather: WeatherResponse) -> CityWeatherData {
-        let title = id == .currentPlaceId ? "Current palce" : weather.name
+
+    func prepareCityWeatherData(for id: Int) -> CityWeatherData {
+        guard let weatherData = weatherCache[id] else { return .emptyData }
+
+        let title = id == .currentPlaceId ? "Current palce" : weatherData.name
         let subtitle = id == .currentPlaceId
-        ? weather.name ?? "\(weather.coordinate.lat) \(weather.coordinate.lon)"
-        : nil
-        
-        let weatherData = CityWeatherData(
-            id: id,
-            titleData: TitleViewData(
-                title: title,
-                subtitle: subtitle,
-                currentTemp: weather.main.temp.formatedTemp(),
-                description: weather.weather.first?.main ?? "",
-                minTemp: weather.main.tempMax.formatedTemp(),
-                maxTemp: weather.main.tempMin.formatedTemp()
-            ),
-            forecastData: weatherDataCache[id]?.forecastData
+            ? weatherData.name ?? "\(weatherData.coordinate.lat) \(weatherData.coordinate.lon)"
+            : nil
+
+        let titleData = TitleViewData(
+            title: title,
+            subtitle: subtitle,
+            currentTemp: weatherData.main.temp,
+            description: "Test description", // TODO: Added description with feels like and humidity
+            minTemp: weatherData.main.tempMax,
+            maxTemp: weatherData.main.tempMin
         )
-        
-        return weatherData
+
+        return CityWeatherData(id: id,
+                               titleData: titleData,
+                               dayHourlyDescription: nil, // TODO: Added description
+                               dayHourlyData: prepareDayHourlyData(for: forecastCache[id]),
+                               dayData: prepareDayData(for: forecastCache[id], and: weatherData))
     }
-    
-    func prepareCityWeatherData(for id: Int, and forecast: ForecastResponse) -> CityWeatherData {
-        let titleData: TitleViewData
-        if let prewWeatherData = weatherDataCache[id] {
-            titleData = prewWeatherData.titleData
-        } else {
-            let firstItem = forecast.list.first
-            titleData = TitleViewData(title: forecast.city.name,
-                                      subtitle: nil,
-                                      currentTemp: firstItem?.main.temp.formatedTemp() ?? "--",
-                                      description: firstItem?.main.feelsLike.formatedTemp() ?? "--",
-                                      minTemp: firstItem?.main.tempMin.formatedTemp() ?? "--",
-                                      maxTemp: firstItem?.main.tempMax.formatedTemp() ?? "--")
-        }
 
-        let weatherData = CityWeatherData(
-            id: id,
-            titleData: titleData,
-            forecastData: CityForecastData(
-                dayHourlyDescription: "Cloudy weather from 9:00 to 19:00, mostly sunny weather is expected at 12:00",
-                dayHourlyData: prepareDayHourlyData(),
-                dayData: [
-                    DayViewData(title: "Today",
-                                imageSystemName: "sun.max.fill",
-                                minTemp: 9,
-                                maxTemp: 22,
-                                minDayTemp: 11,
-                                maxDayTemp: 20,
-                                currentTemt: 15),
-                    DayViewData(title: "SU",
-                                imageSystemName: "sun.max.fill",
-                                minTemp: 9,
-                                maxTemp: 22,
-                                minDayTemp: 11,
-                                maxDayTemp: 20,
-                                currentTemt: 15),
-                    DayViewData(title: "MO",
-                                imageSystemName: "sun.max.fill",
-                                minTemp: 9,
-                                maxTemp: 22,
-                                minDayTemp: 11,
-                                maxDayTemp: 20,
-                                currentTemt: 15),
-                    DayViewData(title: "TU",
-                                imageSystemName: "sun.max.fill",
-                                minTemp: 9,
-                                maxTemp: 22,
-                                minDayTemp: 11,
-                                maxDayTemp: 20,
-                                currentTemt: 15),
-                    DayViewData(title: "WE",
-                                imageSystemName: "sun.max.fill",
-                                minTemp: 9,
-                                maxTemp: 22,
-                                minDayTemp: 11,
-                                maxDayTemp: 20,
-                                currentTemt: 15),
-                    DayViewData(title: "TH",
-                                imageSystemName: "sun.max.fill",
-                                minTemp: 9,
-                                maxTemp: 22,
-                                minDayTemp: 11,
-                                maxDayTemp: 20,
-                                currentTemt: 15),
-                    DayViewData(title: "FR",
-                                imageSystemName: "sun.max.fill",
-                                minTemp: 9,
-                                maxTemp: 22,
-                                minDayTemp: 11,
-                                maxDayTemp: 20,
-                                currentTemt: 15),
-                    DayViewData(title: "SA",
-                                imageSystemName: "sun.max.fill",
-                                minTemp: 9,
-                                maxTemp: 22,
-                                minDayTemp: 11,
-                                maxDayTemp: 20,
-                                currentTemt: 15),
-                ]
-            )
-        )
+    func prepareDayHourlyData(for forecast: ForecastResponse?) -> [DayHourlyViewData]? {
+        guard let forecast else { return nil }
+        var calendar = Calendar.current
+        calendar.timeZone = forecast.city.timeZone
 
-        return weatherData
+        var tempData = forecast.list
+            .map { item in // Prepare and forecast data
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "HH"
+                dateFormatter.timeZone = forecast.city.timeZone
 
-        func prepareDayHourlyData() -> [DayHourlyViewData] {
-            let calendar = Calendar.current
-
-            var tempData = forecast.list
-                .filter { item in // Filter forecast data only for on day
-                    if let nexDay = calendar.date(byAdding: .day, value: 1, to: Date()),
-                       item.date > nexDay {
-                        return false
-                    }
-
-                    return true
-                }
-                .map { item in // Prepare and simplified data
-
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "HH"
-                    dateFormatter.timeZone = forecast.city.timeZone
-
-                    return (date: item.date,
-                            dateStr: dateFormatter.string(from: item.date),
-                            imageSystemName: item.weather.first?.icon.sistemName,
-                            temp: item.main.temp.formatedTemp())
-                }
-
-            tempData.append((date: Date(), // Added today data
-                             dateStr: "Now",
-                             imageSystemName: tempData.first?.imageSystemName,
-                             temp: tempData.first?.temp ?? ""))
-
-            // Prepare and add sunrise/sunset data
-            let sunriseDate: Date
-            let sunsetDate: Date
-            if forecast.list.first?.system.partOfDay == .day {
-                sunriseDate = calendar.date(byAdding: .day, value: 1, to: forecast.city.sunriseDate)  ?? Date()
-                sunsetDate = forecast.city.sunsetDate
-            } else {
-                sunriseDate = forecast.city.sunriseDate
-                sunsetDate = calendar.date(byAdding: .day, value: 1, to: forecast.city.sunsetDate) ?? Date()
+                return DayHourlyViewData(date: item.date,
+                                         title: dateFormatter.string(from: item.date),
+                                         imageSystemName: item.weather.first?.icon.sistemName,
+                                         temp: item.main.temp.formatedTemp())
             }
 
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "HH:mm"
-            dateFormatter.timeZone = forecast.city.timeZone
-            tempData.append((date: sunriseDate,
-                             dateStr: dateFormatter.string(from: sunriseDate),
-                             imageSystemName: "sunrise.fill",
-                             temp: "Sunrise"))
-            tempData.append((date: sunsetDate,
-                             dateStr: dateFormatter.string(from: sunsetDate),
-                             imageSystemName: "sunset.fill",
-                             temp: "Sunset"))
+        let nowDate = Date()
+        tempData.append(DayHourlyViewData(date: nowDate, // Added today data
+                                          title: "Now",
+                                          imageSystemName: tempData.first?.imageSystemName,
+                                          temp: tempData.first?.temp ?? ""))
 
-            return tempData
-                .sorted { $0.date < $1.date } // Sorting by date for correct displaying order 
-                .map { item in
-                    return DayHourlyViewData(title: item.dateStr,
-                                             imageSystemName: item.imageSystemName ?? "sun.fill",
-                                             temp: item.temp)
-                }
+        // Prepare and adding sunrise data
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        dateFormatter.timeZone = forecast.city.timeZone
+
+        let sunriseDates = [
+            forecast.city.sunriseDate,
+            calendar.nextDay(for: forecast.city.sunriseDate)
+        ]
+
+        sunriseDates.forEach { date in
+            tempData.append(DayHourlyViewData(date: date,
+                                              title: dateFormatter.string(from: date),
+                                              imageSystemName: "sunrise.fill",
+                                              temp: "Sunrise"))
         }
+
+        // Prepare and adding sunset data
+        let sunsetDates = [
+            forecast.city.sunsetDate,
+            calendar.nextDay(for: forecast.city.sunsetDate)
+        ]
+        sunsetDates.forEach { date in
+            tempData.append(DayHourlyViewData(date: date,
+                                              title: dateFormatter.string(from: date),
+                                              imageSystemName: "sunset.fill",
+                                              temp: "Sunset"))
+        }
+
+        return tempData
+            .sorted { $0.date < $1.date }
+            .filter { item in
+                item.date >= nowDate
+                    && item.date <= calendar.nextDay(for: nowDate)
+            }
+    }
+
+    func prepareDayData(for forecast: ForecastResponse?, and weatherData: WeatherResponse) -> [DayViewData]? {
+        guard let forecast else { return nil }
+        var calendar = Calendar.current
+        calendar.timeZone = forecast.city.timeZone
+
+        var tempData: [Int: [ForecastResponse.ItemData]] = [:]
+        forecast.list.forEach { item in
+            let day = calendar.component(.day, from: item.date)
+
+            if var dates = tempData[day] {
+                dates.append(item)
+                tempData[day] = dates
+            } else {
+                tempData[day] = [item]
+            }
+        }
+
+        let minTemp = forecast.list.map { $0.main.tempMin }.min() ?? 0
+        let maxTemp = forecast.list.map { $0.main.tempMax }.max() ?? 1
+
+        var dayData = tempData
+            .sorted { $0.key < $1.key }
+            .map { key, items in
+                let minDayTemp = items.map { $0.main.tempMin }.min() ?? 0
+                let maxDayTemp = items.map { $0.main.tempMax }.max() ?? 1
+
+                let todayKey = calendar.component(.day, from: Date())
+                if key == todayKey {
+                    return DayViewData(title: "Today",
+                                       imageSystemName: weatherData.weather.first?.icon.sistemName,
+                                       minTemp: minTemp,
+                                       maxTemp: maxTemp,
+                                       minDayTemp: minTemp, // Data not available
+                                       maxDayTemp: maxTemp, // Data not available
+                                       currentTemt: weatherData.main.temp)
+
+                } else {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "EEE"
+                    dateFormatter.timeZone = forecast.city.timeZone
+
+                    return DayViewData(title: dateFormatter.string(from: items.first?.date ?? Date()),
+                                       imageSystemName: items.first?.weather.first?.icon.sistemName,
+                                       minTemp: minTemp,
+                                       maxTemp: maxTemp,
+                                       minDayTemp: minDayTemp,
+                                       maxDayTemp: maxDayTemp,
+                                       currentTemt: nil)
+                }
+            }
+        return dayData
+    }
+}
+
+fileprivate extension Calendar {
+    func nextDay(for date: Date) -> Date {
+        self.date(byAdding: .day, value: 1, to: date) ?? date
     }
 }

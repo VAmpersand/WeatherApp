@@ -64,7 +64,8 @@ final class HourWeatherCell: BaseCollectionViewCell {
     // MARK: Public methods
     func setup(_ model: DayHourlyViewData) {
         hourLabel.text = model.title
-        iconView.image = UIImage(systemName: model.imageSystemName)?.withRenderingMode(.alwaysOriginal)
+        iconView.image = UIImage(systemName: model.imageSystemName ?? "sun.fill")?
+                            .withRenderingMode(.alwaysOriginal)
         tempLabel.text = model.temp
     }
 }

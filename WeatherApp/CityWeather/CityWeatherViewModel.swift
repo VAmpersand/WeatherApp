@@ -34,7 +34,7 @@ extension CityWeatherViewModel {
 
         var id: String {
             switch self {
-            case .dayHourlyWeather(let data): return data.id
+            case .dayHourlyWeather(let data): return "\(data.date)"
             case .dayWeather(let data): return data.id
             }
         }
@@ -59,16 +59,15 @@ final class CityWeatherViewModel: CityWeatherViewModelInput {
     }
 
     private func prepareDataSource() {
-        let forecast = weatherData.forecastData
         output?.sections = [
             Section(imageSystemName: "clock",
                     title: "Hourly forecast",
-                    description: forecast?.dayHourlyDescription,
-                    items: forecast?.dayHourlyData.map { .dayHourlyWeather(data: $0) } ?? []),
+                    description: weatherData.dayHourlyDescription,
+                    items: weatherData.dayHourlyData?.map { .dayHourlyWeather(data: $0) } ?? []),
             Section(imageSystemName: "calendar",
-                    title: "Forecast for \(forecast?.dayData.count ?? 0) days",
+                    title: "Forecast for \(weatherData.dayData?.count ?? 0) days",
                     description: nil,
-                    items: forecast?.dayData.map { .dayWeather(data: $0) } ?? [])
+                    items: weatherData.dayData?.map { .dayWeather(data: $0) } ?? [])
         ]
     }
 }
