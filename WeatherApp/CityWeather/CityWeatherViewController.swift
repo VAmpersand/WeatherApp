@@ -29,6 +29,8 @@ final class CityWeatherViewController: BaseViewController {
         }
     }
 
+    var cityID: Int?
+
     // MARK: Lifecycle
     override func setup() {
         super.setup()
@@ -282,7 +284,7 @@ extension CityWeatherViewController: UICollectionViewDelegate {
 
 // MARK: - CityWeatherViewModelOutput
 extension CityWeatherViewController: CityWeatherViewModelOutput {
-    func setupTitle(with data: TitleData) {
+    func setupTitle(with data: TitleViewData) {
         titleView.setup(data)
     }
 

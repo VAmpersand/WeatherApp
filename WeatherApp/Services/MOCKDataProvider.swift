@@ -8,34 +8,32 @@
 import UIKit
 
 struct CityWeatherData: Hashable {
-    let titleData: TitleData
-    let dayHourlyDescription: String
-    let dayHourlyData: [DayHourlyData]
-    let dayData: [DayData]
+    let id: Int
+    let titleData: TitleViewData
+    let dayHourlyDescription: String?
+    let dayHourlyData: [DayHourlyViewData]?
+    let dayData: [DayViewData]?
 }
 
-struct TitleData: Hashable {
-    let title: String
+struct TitleViewData: Hashable {
+    let title: String?
     let subtitle: String?
-    let currentTemp: Int
-    let description: String
-    let minTemp: Int
-    let maxTemp: Int
+    let currentTemp: Double?
+    let description: String?
+    let minTemp: Double?
+    let maxTemp: Double?
 }
 
-struct DayHourlyData: Hashable {
-    let hour: String
-    let imageSystemName: String
-    let temp: Int
-
-    var id: String {
-        "\(hour) \(imageSystemName) \(temp)"
-    }
-}
-
-struct DayData: Hashable {
+struct DayHourlyViewData: Hashable {
+    let date: Date
     let title: String
-    let imageSystemName: String
+    let imageSystemName: String?
+    let temp: String
+}
+
+struct DayViewData: Hashable {
+    let title: String
+    let imageSystemName: String?
     let minTemp: Double
     let maxTemp: Double
     let minDayTemp: Double
@@ -48,303 +46,19 @@ struct DayData: Hashable {
 }
 
 extension CityWeatherData {
-    static var mockData: [CityWeatherData] {
-        return [
-            // MARK: - MOCK Data for first city
-            CityWeatherData(titleData: TitleData(title: "Current palce",
-                                                 subtitle: "BUENOS AIRES",
-                                                 currentTemp: 19,
-                                                 description: "Clear sky",
-                                                 minTemp: 15,
-                                                 maxTemp: 22),
-                            dayHourlyDescription: "Cloudy weather from 9:00 to 19:00, mostly sunny weather is expected at 12:00",
-                            dayHourlyData:[
-                                DayHourlyData(hour: "Now Now Now",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "09",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "10",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "11",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "12",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "13",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "14",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "15",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "16",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "17",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                            ],
-                            dayData: [
-                                DayData(title: "Today",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "SU",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "MO",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "TU",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "WE",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "TH",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "FR",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "SA",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                            ]),
-            // MARK: - MOCK Data for second city
-            CityWeatherData(titleData: TitleData(title: "MOSCOW",
-                                                 subtitle: "16:42",
-                                                 currentTemp: 19,
-                                                 description: "Clear sky",
-                                                 minTemp: 15,
-                                                 maxTemp: 22),
-                            dayHourlyDescription: "Cloudy weather from 9:00 to 19:00, mostly sunny weather is expected at 12:00",
-                            dayHourlyData:[
-                                DayHourlyData(hour: "Now",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "09",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "10",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "11",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "12",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "13",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "14",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "15",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "16",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "17",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                            ],
-                            dayData: [
-                                DayData(title: "Today",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "SU",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "MO",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "TU",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "WE",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "TH",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "FR",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "SA",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                            ]),
-            // MARK: - MOCK Data for third city
-            CityWeatherData(titleData: TitleData(title: "PARIS",
-                                                 subtitle: "14:42",
-                                                 currentTemp: 19,
-                                                 description: "Clear sky",
-                                                 minTemp: 15,
-                                                 maxTemp: 22),
-                            dayHourlyDescription: "Cloudy weather from 9:00 to 19:00, mostly sunny weather is expected at 12:00",
-                            dayHourlyData:[
-                                DayHourlyData(hour: "Now",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "09",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "10",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "11",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "12",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "13",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "14",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "15",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "16",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                                DayHourlyData(hour: "17",
-                                              imageSystemName: "sun.max.fill",
-                                              temp: 15),
-                            ],
-                            dayData: [
-                                DayData(title: "Today",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "SU",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "MO",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "TU",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "WE",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "TH",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "FR",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                                DayData(title: "SA",
-                                        imageSystemName: "sun.max.fill",
-                                        minTemp: 9,
-                                        maxTemp: 22,
-                                        minDayTemp: 11,
-                                        maxDayTemp: 20,
-                                        currentTemt: 15),
-                            ])
-        ]
+    static var emptyData: CityWeatherData {
+        CityWeatherData(
+            id: .currentPlaceId,
+            titleData: TitleViewData(title: "--",
+                                     subtitle: "--",
+                                     currentTemp: nil,
+                                     description: "--",
+                                     minTemp: nil,
+                                     maxTemp: nil),
+            dayHourlyDescription: nil,
+            dayHourlyData: nil,
+            dayData: nil
+        )
     }
 }
 

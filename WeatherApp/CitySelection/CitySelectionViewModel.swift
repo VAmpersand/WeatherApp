@@ -10,11 +10,13 @@ import UIKit
 protocol CitySelectionViewModelInput {
     var output: CitySelectionViewModelOutput? { get set }
 
-    func viewDidLoad()
+    func getForecastForCity(with id: Int?)
 }
 
 protocol CitySelectionViewModelOutput: AnyObject {
     var sections: [CitySelectionViewModel.Section] { get set }
+
+    func setup(_ weatherData: CityWeatherData)
 }
 
 extension CitySelectionViewModel {
@@ -33,8 +35,15 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
         self.weatherProvider?.delegate = self
     }
 
-    func viewDidLoad() {
-        prepareSections(with: weatherProvider?.weatherDataCache ?? [])
+    func getForecastForCity(with id: Int?) {
+        guard let id else { return }
+
+        weatherProvider?.getForecastForCity(with: id) { [weak self] weatherData in
+            self?.output?.setup(weatherData)
+            self?.prepareSections(with: [weatherData])
+        } errorHandler: { error in
+            print(#function, error.description)
+        }
     }
 
     private func prepareSections(with data: [CityWeatherData]) {

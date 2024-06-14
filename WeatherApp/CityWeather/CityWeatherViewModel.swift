@@ -10,13 +10,14 @@ import UIKit
 protocol CityWeatherViewModelInput {
     var output: CityWeatherViewModelOutput? { get set }
 
+    func setup(_ weatherData: CityWeatherData)
     func viewDidLoad()
 }
 
 protocol CityWeatherViewModelOutput: AnyObject {
     var sections: [CityWeatherViewModel.Section] { get set }
 
-    func setupTitle(with data: TitleData)
+    func setupTitle(with data: TitleViewData)
 }
 
 extension CityWeatherViewModel {
@@ -28,12 +29,12 @@ extension CityWeatherViewModel {
     }
 
     enum Item: Hashable {
-        case dayHourlyWeather(data: DayHourlyData)
-        case dayWeather(data: DayData)
+        case dayHourlyWeather(data: DayHourlyViewData)
+        case dayWeather(data: DayViewData)
 
         var id: String {
             switch self {
-            case .dayHourlyWeather(let data): return data.id
+            case .dayHourlyWeather(let data): return "\(data.date)"
             case .dayWeather(let data): return data.id
             }
         }
@@ -41,12 +42,14 @@ extension CityWeatherViewModel {
 }
 
 final class CityWeatherViewModel: CityWeatherViewModelInput {
-    private let weatherData: CityWeatherData!
+    private var weatherData: CityWeatherData = .emptyData
 
     weak var output: CityWeatherViewModelOutput?
 
-    init(with weatherData: CityWeatherData?) {
-        self.weatherData = weatherData ?? CityWeatherData.mockData.first
+    func setup(_ weatherData: CityWeatherData) {
+        self.weatherData = weatherData
+
+        viewDidLoad()
     }
 
     func viewDidLoad() {
@@ -60,11 +63,11 @@ final class CityWeatherViewModel: CityWeatherViewModelInput {
             Section(imageSystemName: "clock",
                     title: "Hourly forecast",
                     description: weatherData.dayHourlyDescription,
-                    items: weatherData.dayHourlyData.map { .dayHourlyWeather(data: $0) }),
+                    items: weatherData.dayHourlyData?.map { .dayHourlyWeather(data: $0) } ?? []),
             Section(imageSystemName: "calendar",
-                    title: "Forecast for \(weatherData.dayData.count) days",
+                    title: "Forecast for \(weatherData.dayData?.count ?? 0) days",
                     description: nil,
-                    items: weatherData.dayData.map { .dayWeather(data: $0) })
+                    items: weatherData.dayData?.map { .dayWeather(data: $0) } ?? [])
         ]
     }
 }

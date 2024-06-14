@@ -104,13 +104,16 @@ final class CityViewCell: BaseCollectionViewCell {
     }
 
     // MARK: Public methods
-    func setup(_ data: TitleData) {
+    func setup(_ data: TitleViewData) {
         titleLabel.text = data.title
         subtitleLabel.text = data.subtitle
         subtitleLabel.isHidden = data.subtitle == nil
-        tempLabel.text = "\(data.currentTemp)º"
+        tempLabel.text = data.currentTemp?.formatedTemp()
         descriptionLable.text = data.description
-        tempLimitsLabel.text = "Max: \(data.maxTemp)º, min: \(data.minTemp)º"
+
+        if let maxTemp = data.maxTemp, let minTemp = data.minTemp {
+            tempLimitsLabel.text = "Max: \(maxTemp.formatedTemp()), min: \(minTemp.formatedTemp())"
+        }
     }
 }
 

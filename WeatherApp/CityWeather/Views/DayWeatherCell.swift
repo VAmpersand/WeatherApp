@@ -41,11 +41,12 @@ final class DayWeatherCell: BaseCollectionViewCell {
 
     private func setupIconView() {
         addSubview(iconView)
-        iconView.contentMode = .scaleAspectFit
+        iconView.contentMode = .center
 
         iconView.snp.makeConstraints { make in
             make.leading.equalTo(titleLabel.snp.trailing).offset(16)
             make.centerY.equalToSuperview()
+            make.size.equalTo(30)
         }
     }
 
@@ -58,7 +59,7 @@ final class DayWeatherCell: BaseCollectionViewCell {
         minTempLabel.snp.makeConstraints { make in
             make.leading.equalTo(iconView.snp.trailing).offset(16)
             make.centerY.equalToSuperview()
-            make.width.equalTo(30)
+            make.width.equalTo(35)
         }
     }
 
@@ -81,16 +82,17 @@ final class DayWeatherCell: BaseCollectionViewCell {
             make.leading.equalTo(tempLimitsView.snp.trailing).offset(16)
             make.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.width.equalTo(30)
+            make.width.equalTo(35)
         }
     }
 
     // MARK: Public methods
-    func setup(_ inputModel: DayData) {
+    func setup(_ inputModel: DayViewData) {
         titleLabel.text = inputModel.title
-        iconView.image = UIImage(systemName: inputModel.imageSystemName)?.withRenderingMode(.alwaysOriginal)
-        minTempLabel.text = "\(Int(inputModel.minDayTemp))º"
-        maxTempLabel.text = "\(Int(inputModel.maxDayTemp))º"
+        iconView.image = UIImage(systemName: inputModel.imageSystemName ?? "cloud.sun.fill")?
+                            .withRenderingMode(.alwaysOriginal)
+        minTempLabel.text = inputModel.minDayTemp.formatedTemp()
+        maxTempLabel.text = inputModel.maxDayTemp.formatedTemp()
         tempLimitsView.setup(inputModel)
     }
 }
@@ -147,7 +149,7 @@ extension DayWeatherCell {
         }
 
         // MARK: Public methods
-        func setup(_ model: DayData) {
+        func setup(_ model: DayViewData) {
             let tempDiff = model.maxTemp - model.minTemp
             let minOffset = abs(model.minTemp - model.minDayTemp) / tempDiff
             let maxOffset = abs(model.maxTemp - model.maxDayTemp) / tempDiff
@@ -159,6 +161,7 @@ extension DayWeatherCell {
             }
 
             if let currentTemt = model.currentTemt {
+                currentTempView.isHidden = false
                 let currentTempOffset = abs(model.minTemp - currentTemt) / tempDiff
 
                 if currentTempOffset == 0 {
@@ -172,6 +175,8 @@ extension DayWeatherCell {
                         make.size.equalTo(snp.height)
                     }
                 }
+            } else {
+                currentTempView.isHidden = true
             }
         }
     }
