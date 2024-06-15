@@ -8,6 +8,11 @@
 import UIKit
 import SnapKit
 
+protocol CitySelectionViewControllerDelegate {
+    func sceneDidEnterBackground()
+    func sceneWillEnterForeground()
+}
+
 final class CitySelectionViewController: BaseViewController {
     typealias Section = CitySelectionViewModel.Section
     typealias Item = CityWeatherData
@@ -225,6 +230,9 @@ final class CitySelectionViewController: BaseViewController {
     }
 
     // MARK: Public methods
+    func sceneWillEnterForeground() {
+        viewModel?.getWeatherForCityList()
+    }
 }
 
 // MARK: - UISearchBarDelegate
@@ -262,7 +270,7 @@ extension CitySelectionViewController: CitySelectionViewModelOutput {}
 
 // MARK: - CitySearchViewControllerDelegate
 extension CitySelectionViewController: CitySearchViewControllerDelegate {
-    func cityAddedToList() {
+    func reloadData() {
         navigationItem.searchController?.searchBar.text = nil
         viewModel?.getWeatherForCityList()
     }

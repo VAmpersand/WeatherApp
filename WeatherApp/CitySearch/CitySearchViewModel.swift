@@ -5,27 +5,25 @@
 //  Created by Viktor Prikolota on 08.06.2024.
 //
 
-import UIKit
+import Foundation
 
 protocol CitySearchViewModelInput {
     var output: CitySearchViewModelOutput? { get set }
 
     func filterCity(with searchQuery: String)
     func select(_ city: CityData)
-    func getAttributedTitle(for indexPath: IndexPath) -> NSAttributedString?
 }
 
 protocol CitySearchViewModelOutput: AnyObject {
+    var searchQuery: String { get set }
     var cityList: [CityData] { get set }
 }
-
 
 final class CitySearchViewModel: CitySearchViewModelInput {
     weak var output: CitySearchViewModelOutput?
 
     private let storageManager = UDStorageManager()
     private let cityListProvider: CityListProvider
-    private var searchQuery = ""
 
     init(cityListProvider: CityListProvider) {
         self.cityListProvider = cityListProvider
@@ -34,7 +32,7 @@ final class CitySearchViewModel: CitySearchViewModelInput {
     }
 
     func filterCity(with searchQuery: String) {
-        self.searchQuery = searchQuery
+        output?.searchQuery = searchQuery
 
         if searchQuery.isEmpty {
             output?.cityList = []
@@ -48,25 +46,6 @@ final class CitySearchViewModel: CitySearchViewModelInput {
     }
 
     func select(_ city: CityData) {
-        var selectedCityList: [CityData] = cityListProvider.selectedCityList
-        selectedCityList.append(city)
-        storageManager.set(object: selectedCityList, fotKey: .selectedCityList)
-    }
-
-    func getAttributedTitle(for indexPath: IndexPath) -> NSAttributedString? {
-        guard let city = output?.cityList[indexPath.row] else { return nil }
-
-        var title = "\(city.name), \(city.country)"
-        if !city.state.isEmpty { title += ", \(city.state)" }
-
-        let attributedText = NSMutableAttributedString(
-            string: title,
-            attributes: [.foregroundColor: UIColor.white.withAlphaComponent(0.5)]
-        )
-
-        let queryRange = (title.lowercased() as NSString).range(of: searchQuery)
-        attributedText.addAttributes([.foregroundColor: UIColor.white], range: queryRange)
-        
-        return attributedText
+        cityListProvider.add(city)
     }
 }

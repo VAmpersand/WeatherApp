@@ -9,7 +9,10 @@ import Foundation
 
 protocol CityListProvider {
     var cityList: [CityData] { get }
-    var selectedCityList: [CityData] { get }
+    var selectedCityList: [CityData] { get set }
+
+    func add(_ city: CityData)
+    func delete(_ city: CityData)
 }
 
 final class CityListProviderImpl: CityListProvider {
@@ -18,8 +21,13 @@ final class CityListProviderImpl: CityListProvider {
 
     var cityList: [CityData] = []
     var selectedCityList: [CityData] {
-        let cityList: [CityData]? = storageManager.object(forKey: .selectedCityList)
-        return cityList ?? [currentPlace]
+        get {
+            let cityList: [CityData]? = storageManager.object(forKey: .selectedCityList)
+            return cityList ?? [currentPlace]
+        }
+        set {
+            storageManager.set(object: newValue, fotKey: .selectedCityList)
+        }
     }
 
     var currentPlace: CityData {
@@ -39,6 +47,19 @@ final class CityListProviderImpl: CityListProvider {
         let decoder = JSONDecoder()
 
         cityList = try! decoder.decode([CityData].self, from: data)
+    }
+
+    func add(_ city: CityData) {
+        var selectedCityList: [CityData] = selectedCityList
+        selectedCityList.append(city)
+        storageManager.set(object: selectedCityList, fotKey: .selectedCityList)
+    }
+
+    func delete(_ city: CityData) {
+        guard city.id != .currentPlaceID,
+            let index = selectedCityList.firstIndex(where: { $0.id == city.id }) else { return }
+
+        selectedCityList.remove(at: index)
     }
 }
 

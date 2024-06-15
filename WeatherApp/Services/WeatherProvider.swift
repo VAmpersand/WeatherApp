@@ -14,9 +14,6 @@ protocol WeatherProviderDelegate: AnyObject {
 protocol WeatherProvider {
     var delegate: WeatherProviderDelegate? { get set }
 
-    func sceneDidEnterBackground()
-    func sceneWillEnterForeground()
-
     func getWeatherFor(_ cityList: [CityData],
                        completionHandler: @escaping ([Int: CityWeatherData]) -> Void,
                        errorHandler: ((AppError) -> Void)?)
@@ -41,50 +38,42 @@ final class WeatherProviderImpl: WeatherProvider {
             return true
         }
 
-        return nextUploadDate < Date()
-    }
-
-    func sceneDidEnterBackground() {
-
-    }
-
-    func sceneWillEnterForeground() {
-        if isNeedUploadNewWeatherData {
-            updatedForecastIDs = []
-
-            let id = Int.currentPlaceID
-
-            let cityList: [CityData] = storageManager.object(forKey: .selectedCityList) ?? []
-            getWeatherFor(cityList) { [weak self] weatherData in
-                guard let self else { return }
-
-                weatherData.forEach { key, value in
-                    self.weatherDataCache[id] = value
-                }
-
-                delegate?.setCurrentWeather(weatherData)
-                storageManager.set(object: Date(), fotKey: .weatherUploadDate)
-            } errorHandler: { error in
-                print(#function, error.description)
-            }
-        } else {
-            delegate?.setCurrentWeather(weatherDataCache)
-        }
+        return weatherDataCache.isEmpty || nextUploadDate < Date()
     }
 
     func getWeatherFor(_ cityList: [CityData],
                        completionHandler: @escaping ([Int: CityWeatherData]) -> Void,
                        errorHandler: ((AppError) -> Void)?) {
-        var cityListWeatherFetched = cityList.count == 1
-        var cityListWeather: [Int: CityWeatherData] = [:]
+        if isNeedUploadNewWeatherData {
+            updatedForecastIDs = []
+            var cityListWeatherFetched = cityList.count == 1
+            var cityListWeather: [Int: CityWeatherData] = [:]
 
-        if let currentPlace = cityList.first(where: { $0.id == .currentPlaceID }) {
-            getWeatherForCity(
-                currentPlace,
+            if let currentPlace = cityList.first(where: { $0.id == .currentPlaceID }) {
+                getWeatherForCity(
+                    currentPlace,
+                    completionHandler: { data in
+                        cityListWeather[.currentPlaceID] = data
+
+                        if cityListWeatherFetched {
+                            completionHandler(cityListWeather)
+                        }
+                    },
+                    errorHandler: { error in
+                        errorHandler?(error)
+                    }
+                )
+            }
+
+            getWeatherForCityGroup(
+                cityList.filter { $0.id != .currentPlaceID },
                 completionHandler: { data in
-                    cityListWeather[.currentPlaceID] = data
+                    data.forEach { key, value in
+                        cityListWeather[key] = value
+                    }
+                    cityListWeatherFetched = true
 
-                    if cityListWeatherFetched {
+                    if cityListWeather[.currentPlaceID] != nil {
                         completionHandler(cityListWeather)
                     }
                 },
@@ -92,24 +81,11 @@ final class WeatherProviderImpl: WeatherProvider {
                     errorHandler?(error)
                 }
             )
+
+            storageManager.set(object: Date(), fotKey: .weatherUploadDate)
+        } else {
+            delegate?.setCurrentWeather(weatherDataCache)
         }
-
-        getWeatherForCityGroup(
-            cityList.filter { $0.id != .currentPlaceID },
-            completionHandler: { data in
-                data.forEach { key, value in
-                    cityListWeather[key] = value
-                }
-                cityListWeatherFetched = true
-
-                if cityListWeather[.currentPlaceID] != nil {
-                    completionHandler(cityListWeather)
-                }
-            },
-            errorHandler: { error in
-                errorHandler?(error)
-            }
-        )
     }
 
     func getForecastForCity(_ cityData: CityData,
@@ -256,7 +232,7 @@ private extension WeatherProviderImpl {
             .sorted { $0.date < $1.date }
             .filter { item in
                 item.date >= nowDate
-                    && item.date <= calendar.nextDay(for: nowDate)
+                && item.date <= calendar.nextDay(for: nowDate)
             }
     }
 

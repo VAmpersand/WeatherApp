@@ -44,15 +44,13 @@ final class CitySelectionViewModel: CitySelectionViewModelInput {
     }
 
     func getWeatherForCityList() {
-        weatherProvider?.getWeatherFor(
-            cityList
-        ) { [weak self] data in
+        weatherProvider?.getWeatherFor(cityList) { [weak self] data in
             guard let self else { return }
 
             let sortedData = cityList.compactMap { data[$0.id] ?? $0.weatherData }
             prepareSections(with: sortedData)
         } errorHandler: { error in
-
+            print(#function, error.description)
         }
     }
 
