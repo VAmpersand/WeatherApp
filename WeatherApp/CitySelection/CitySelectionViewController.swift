@@ -231,8 +231,7 @@ extension CitySelectionViewController: UnitSelectionViewDelegate {
     func showUnitInfo() {
         unitSelectionView.isHidden = true
 
-        presentWebView(with: URL(string: "https://meteoinfo.ru/t-scale"),
-                       title: "Info")
+        presentWebView(with: URL(string: "https://meteoinfo.ru/t-scale"), title: "Info")
     }
 }
 
