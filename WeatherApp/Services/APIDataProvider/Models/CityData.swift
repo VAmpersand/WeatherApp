@@ -21,4 +21,20 @@ struct CityData: Codable {
         case country
         case coordinate = "coord"
     }
+    
+    var weatherData: CityWeatherData {
+        CityWeatherData(
+            id: id,
+            titleData: TitleViewData(
+                title: name,
+                subtitle: nil,
+                currentTemp: nil,
+                description: nil,
+                minTemp: nil,
+                maxTemp: nil),
+            dayHourlyDescription: nil,
+            dayHourlyData: nil,
+            dayData: nil
+        )
+    }
 }

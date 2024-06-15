@@ -11,6 +11,7 @@ protocol CitySearchViewModelInput {
     var output: CitySearchViewModelOutput? { get set }
 
     func filterCity(with searchQuery: String)
+    func select(_ city: CityData)
     func getAttributedTitle(for indexPath: IndexPath) -> NSAttributedString?
 }
 
@@ -22,6 +23,7 @@ protocol CitySearchViewModelOutput: AnyObject {
 final class CitySearchViewModel: CitySearchViewModelInput {
     weak var output: CitySearchViewModelOutput?
 
+    private let storageManager = UDStorageManager()
     private let cityListProvider: CityListProvider
     private var searchQuery = ""
 
@@ -43,6 +45,12 @@ final class CitySearchViewModel: CitySearchViewModelInput {
                 || $0.state.lowercased().contains(searchQuery)
             }
         }
+    }
+
+    func select(_ city: CityData) {
+        var selectedCityList: [CityData] = cityListProvider.selectedCityList
+        selectedCityList.append(city)
+        storageManager.set(object: selectedCityList, fotKey: .selectedCityList)
     }
 
     func getAttributedTitle(for indexPath: IndexPath) -> NSAttributedString? {

@@ -48,7 +48,7 @@ struct DayViewData: Hashable {
 extension CityWeatherData {
     static var emptyData: CityWeatherData {
         CityWeatherData(
-            id: .currentPlaceId,
+            id: .currentPlaceID,
             titleData: TitleViewData(title: "--",
                                      subtitle: "--",
                                      currentTemp: nil,

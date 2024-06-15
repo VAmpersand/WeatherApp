@@ -9,6 +9,9 @@ import Foundation
 
 enum StorageKey: String {
     case weatherUploadDate
+
+    case cityListStored
+    case selectedCityList
 }
 
 final class UDStorageManager {

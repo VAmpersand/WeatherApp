@@ -8,12 +8,17 @@
 import UIKit
 import SnapKit
 
+protocol CitySearchViewControllerDelegate: AnyObject {
+    func cityAddedToList()
+}
+
 final class CitySearchViewController: BaseViewController {
     // MARK: Properties
     private let tableView = UITableView()
 
     private let cityCellId = "cell"
 
+    weak var delegate: CitySearchViewControllerDelegate?
     var viewModel: CitySearchViewModelInput!
     var cityList: [CityData] = [] {
         didSet {
@@ -83,7 +88,9 @@ extension CitySearchViewController: UITableViewDataSource {
 extension CitySearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        print(cityList[indexPath.row])
+        viewModel.select(cityList[indexPath.row])
+        delegate?.cityAddedToList()
+        dismiss(animated: true)
     }
 }
 
