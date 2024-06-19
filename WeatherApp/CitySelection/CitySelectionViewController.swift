@@ -68,7 +68,7 @@ final class CitySelectionViewController: BaseViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
 
         let citySearchViewController = CitySearchViewController()
-        citySearchViewController.viewModel = CitySearchViewModel(cityListProvider: CityListProviderImpl())
+        citySearchViewController.viewModel = CitySearchViewModel(cityListProvider: CityListProviderImpl.shared)
         citySearchViewController.delegate = self
         let searchController = UISearchController(searchResultsController: citySearchViewController)
         searchController.searchResultsUpdater = citySearchViewController

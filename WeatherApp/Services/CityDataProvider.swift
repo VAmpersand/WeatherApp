@@ -8,6 +8,7 @@
 import Foundation
 
 protocol CityDataProvider {
+    static var shared: CityDataProvider { get }
     var selectedCityList: [CityData] { get set }
 
     func add(_ city: CityData)
@@ -22,6 +23,8 @@ extension CityDataProvider {
 }
 
 final class CityListProviderImpl: CityDataProvider {
+    static let shared: CityDataProvider = CityListProviderImpl()
+
     private let udStorageManager = UDStorageManager()
     private let cdStorageManager = CDStorageManager()
 
@@ -45,7 +48,7 @@ final class CityListProviderImpl: CityDataProvider {
                  coordinate: currentPlaceCoord)
     }
 
-    init() {
+    private init() {
         if udStorageManager.object(forKey: .cityListStored) != true {
             guard let path = Bundle.main.path(forResource: "city_list", ofType: "json"),
                   let data = FileManager.default.contents(atPath: path) else {
@@ -54,7 +57,9 @@ final class CityListProviderImpl: CityDataProvider {
 
             let cityList = try! JSONDecoder().decode([CityData].self, from: data)
 
-            cdStorageManager.storeCityData(cityList) { result in
+            cdStorageManager.storeCityData(cityList) { [weak self] result in
+                self?.udStorageManager.set(object: result, fotKey: .cityListStored)
+
                 print("Storing cityList - \(result ? "sucess" : "failed")")
             }
         }

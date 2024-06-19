@@ -15,11 +15,28 @@ public class CityEntity: NSManagedObject {
         return NSFetchRequest<CityEntity>(entityName: "CityEntity")
     }
 
-    @NSManaged public var country: String?
     @NSManaged public var id: Int
-    @NSManaged public var lat: Double
-    @NSManaged public var lon: Double
     @NSManaged public var name: String?
     @NSManaged public var state: String?
+    @NSManaged public var country: String?
+    @NSManaged public var lat: Double
+    @NSManaged public var lon: Double
 
+    var cityData: CityData {
+        CityData(id: id,
+                 name: name ?? "",
+                 state: state ?? "",
+                 country: country ?? "",
+                 coordinate: Coordinate(lat: lat,
+                                        lon: lon))
+    }
+
+    func setCityData(_ cityData: CityData) {
+        self.id = cityData.id
+        self.name = cityData.name
+        self.state = cityData.state
+        self.country = cityData.country
+        self.lat = cityData.coordinate.lat
+        self.lon = cityData.coordinate.lon
+    }
 }

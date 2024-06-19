@@ -42,12 +42,7 @@ extension CDStorageManager {
         queue.sync { [context] in
             data.forEach { data in
                 let city = CityEntity(context: context)
-                city.id = data.id
-                city.name = data.name
-                city.country = data.country
-                city.state = data.state
-                city.lat = data.coordinate.lat
-                city.lon = data.coordinate.lon
+                city.setCityData(data)
             }
 
             do {
@@ -69,15 +64,7 @@ extension CDStorageManager {
         queue.sync { [context] in
             let fetchRequest = CityEntity.fetchRequest()
             let ferchResult = try? context.fetch(fetchRequest)
-
-            let data = ferchResult?.map { city in
-                return CityData(id: city.id,
-                                name: city.name ?? "",
-                                state: city.state ?? "",
-                                country: city.country ?? "",
-                                coordinate: Coordinate(lat: city.lat,
-                                                       lon: city.lon))
-            }
+            let data = ferchResult?.map(\.cityData)
 
             DispatchQueue.main.async {
                 completion(data)
@@ -94,12 +81,7 @@ extension CDStorageManager {
 
             DispatchQueue.main.async {
                 if let city {
-                    completion(CityData(id: city.id,
-                                        name: city.name ?? "",
-                                        state: city.state ?? "",
-                                        country: city.country ?? "",
-                                        coordinate: Coordinate(lat: city.lat,
-                                                               lon: city.lon)))
+                    completion(city.cityData)
                 } else {
                     completion(nil)
                 }
@@ -108,62 +90,33 @@ extension CDStorageManager {
     }
 
     func fetchCityData(with searchQuery: String?, completion: @escaping ([CityData]) -> Void) {
-        queue.sync { [context] in
-            var fetchRequest = CityEntity.fetchRequest()
-            let countryDescriptor = NSSortDescriptor(key: "country", ascending: true)
-            let stateDescriptor = NSSortDescriptor(key: "state", ascending: true)
-            let nameDescriptor = NSSortDescriptor(key: "name", ascending: true)
-            fetchRequest.sortDescriptors = [countryDescriptor, stateDescriptor, nameDescriptor]
-            fetchRequest.fetchBatchSize = 20
+        let fetchRequest = CityEntity.fetchRequest()
+        let countryDescriptor = NSSortDescriptor(key: "country", ascending: true)
+        let stateDescriptor = NSSortDescriptor(key: "state", ascending: true)
+        let nameDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        fetchRequest.sortDescriptors = [countryDescriptor, stateDescriptor, nameDescriptor]
+        fetchRequest.fetchBatchSize = 20
 
-            if let searchQuery {
-                fetchRequest.predicate = NSPredicate(format: "name CONTAINS[cd] %@", searchQuery.lowercased())
-            }
+        if let searchQuery {
+            fetchRequest.predicate = NSPredicate(format: "name CONTAINS[cd] %@", searchQuery.lowercased())
+        }
 
-            let asyncFetchRequest = NSAsynchronousFetchRequest(fetchRequest: fetchRequest) { request in
-                if let result = request.finalResult {
-                    let data = result.map { city in
-                        return CityData(id: city.id,
-                                        name: city.name ?? "",
-                                        state: city.state ?? "",
-                                        country: city.country ?? "",
-                                        coordinate: Coordinate(lat: city.lat,
-                                                               lon: city.lon))
-                    }
+        let asyncFetchRequest = NSAsynchronousFetchRequest(fetchRequest: fetchRequest) { request in
+            if let result = request.finalResult {
+                let data = result.map(\.cityData)
 
-                    DispatchQueue.main.async {
-                        completion(data)
-                    }
-                }
-            }
-
-            do {
-                try context.execute(asyncFetchRequest)
-            } catch {
                 DispatchQueue.main.async {
-                    completion([])
+                    completion(data)
                 }
             }
         }
-    }
-
-    func fetch() {
-        var fetchRequest = CityEntity.fetchRequest()
-        let nameDescriptor = NSSortDescriptor(key: "name", ascending: true)
-        fetchRequest.sortDescriptors = [nameDescriptor]
-
-        fetchedResultsController = NSFetchedResultsController(
-            fetchRequest: fetchRequest,
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil)
-
-        fetchedResultsController?.delegate = self
 
         do {
-            try fetchedResultsController?.performFetch()
+            try context.execute(asyncFetchRequest)
         } catch {
-            fatalError("Failed to perform fetch: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                completion([])
+            }
         }
     }
 
@@ -175,11 +128,7 @@ extension CDStorageManager {
             let ferchResult = try? context.fetch(fetchRequest)
             let city = ferchResult?.first
 
-            city?.name = newData.name
-            city?.country = newData.country
-            city?.state = newData.state
-            city?.lat = newData.coordinate.lat
-            city?.lon = newData.coordinate.lon
+            city?.setCityData(newData)
 
             do {
                 try context.save()
