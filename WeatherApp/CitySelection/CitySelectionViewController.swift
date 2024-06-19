@@ -272,7 +272,7 @@ extension CitySelectionViewController: CitySelectionViewModelOutput {}
 extension CitySelectionViewController: CitySearchViewControllerDelegate {
     func reloadData() {
         navigationItem.searchController?.searchBar.text = nil
-        viewModel?.getWeatherForCityList()
+        viewModel?.getWeatherForCityList(forced: true)
     }
 }
 
