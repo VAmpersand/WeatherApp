@@ -9,8 +9,8 @@ import Foundation
 
 struct WindData: Decodable {
     let speed: Double
-    let degree: Int
-    let gust: Double
+    let degree: Double
+    let gust: Double?
 
     enum CodingKeys: String, CodingKey {
         case speed

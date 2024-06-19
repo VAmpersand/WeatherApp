@@ -10,13 +10,13 @@ import UIKit
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
-    private let weatherProvider: WeatherProvider = WeatherProviderImpl()
+    private let viewController = CitySelectionViewController()
 
-    func scene(_ scene: UIScene, 
+    func scene(_ scene: UIScene,
                willConnectTo session: UISceneSession,
                options connectionOptions: UIScene.ConnectionOptions) {
 
-        let viewController = CitySelectionViewController()
+        let weatherProvider: WeatherProvider = WeatherProviderImpl()
         viewController.viewModel = CitySelectionViewModel(weatherProvider: weatherProvider)
 
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -27,11 +27,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        weatherProvider.sceneWillEnterForeground()
-    }
-
-    func sceneDidEnterBackground(_ scene: UIScene) {
-        weatherProvider.sceneDidEnterBackground()
+        viewController.sceneWillEnterForeground()
     }
 }
 

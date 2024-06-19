@@ -8,18 +8,25 @@
 import UIKit
 import SnapKit
 
+protocol CitySearchViewControllerDelegate: AnyObject {
+    func reloadData()
+}
+
 final class CitySearchViewController: BaseViewController {
     // MARK: Properties
     private let tableView = UITableView()
 
     private let cityCellId = "cell"
 
+    weak var delegate: CitySearchViewControllerDelegate?
     var viewModel: CitySearchViewModelInput!
     var cityList: [CityData] = [] {
         didSet {
             tableView.reloadData()
         }
     }
+
+    var searchQuery: String = ""
 
     // MARK: Lifecycle
     override func setup() {
@@ -42,6 +49,24 @@ final class CitySearchViewController: BaseViewController {
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.horizontalEdges.bottom.equalToSuperview()
         }
+    }
+
+    // MARK: Private methods
+    private func getAttributedTitle(for indexPath: IndexPath) -> NSAttributedString? {
+        let city = cityList[indexPath.row]
+
+        var title = "\(city.name), \(city.country)"
+        if !city.state.isEmpty { title += ", \(city.state)" }
+
+        let attributedText = NSMutableAttributedString(
+            string: title,
+            attributes: [.foregroundColor: UIColor.white.withAlphaComponent(0.5)]
+        )
+
+        let queryRange = (title.lowercased() as NSString).range(of: searchQuery)
+        attributedText.addAttributes([.foregroundColor: UIColor.white], range: queryRange)
+
+        return attributedText
     }
 
     // MARK: Public methods
@@ -67,7 +92,7 @@ extension CitySearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cityCellId, for: indexPath)
 
-        cell.textLabel?.attributedText = viewModel.getAttributedTitle(for: indexPath)
+        cell.textLabel?.attributedText = getAttributedTitle(for: indexPath)
         cell.imageView?.image = UIImage()
         cell.backgroundColor = .clear
 
@@ -83,7 +108,9 @@ extension CitySearchViewController: UITableViewDataSource {
 extension CitySearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        print(cityList[indexPath.row])
+        viewModel.select(cityList[indexPath.row])
+        delegate?.reloadData()
+        dismiss(animated: true)
     }
 }
 
