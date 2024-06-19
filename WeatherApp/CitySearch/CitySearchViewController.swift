@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import CoreData
 
 protocol CitySearchViewControllerDelegate: AnyObject {
     func reloadData()
@@ -15,8 +16,9 @@ protocol CitySearchViewControllerDelegate: AnyObject {
 final class CitySearchViewController: BaseViewController {
     // MARK: Properties
     private let tableView = UITableView()
-
     private let cityCellId = "cell"
+
+//    private var fetchResultController = NSFetchedResultsController<NSFetchRequestResult>()
 
     weak var delegate: CitySearchViewControllerDelegate?
     var viewModel: CitySearchViewModelInput!

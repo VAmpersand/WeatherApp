@@ -28,7 +28,7 @@ extension CitySelectionViewModel {
 final class CitySelectionViewModel: CitySelectionViewModelInput {
     weak var output: CitySelectionViewModelOutput?
     private let storageManager = UDStorageManager()
-    private let cityListProvider: CityListProvider = CityListProviderImpl()
+    private let cityListProvider: CityDataProvider = CityListProviderImpl()
     private var weatherProvider: WeatherProvider?
 
     var cityList: [CityData] {
