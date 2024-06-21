@@ -68,7 +68,7 @@ final class CitySelectionViewController: BaseViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
 
         let citySearchViewController = CitySearchViewController()
-        citySearchViewController.viewModel = CitySearchViewModel(cityListProvider: CityListProviderImpl())
+        citySearchViewController.viewModel = CitySearchViewModel(cityListProvider: CityListProviderImpl.shared)
         citySearchViewController.delegate = self
         let searchController = UISearchController(searchResultsController: citySearchViewController)
         searchController.searchResultsUpdater = citySearchViewController
@@ -272,7 +272,7 @@ extension CitySelectionViewController: CitySelectionViewModelOutput {}
 extension CitySelectionViewController: CitySearchViewControllerDelegate {
     func reloadData() {
         navigationItem.searchController?.searchBar.text = nil
-        viewModel?.getWeatherForCityList()
+        viewModel?.getWeatherForCityList(forced: true)
     }
 }
 

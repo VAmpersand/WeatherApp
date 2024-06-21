@@ -15,6 +15,7 @@ protocol WeatherProvider {
     var delegate: WeatherProviderDelegate? { get set }
 
     func getWeatherFor(_ cityList: [CityData],
+                       forced: Bool,
                        completionHandler: @escaping ([Int: CityWeatherData]) -> Void,
                        errorHandler: ((AppError) -> Void)?)
     func getForecastForCity(_ cityData: CityData,
@@ -42,9 +43,10 @@ final class WeatherProviderImpl: WeatherProvider {
     }
 
     func getWeatherFor(_ cityList: [CityData],
+                       forced: Bool,
                        completionHandler: @escaping ([Int: CityWeatherData]) -> Void,
                        errorHandler: ((AppError) -> Void)?) {
-        if isNeedUploadNewWeatherData {
+        if isNeedUploadNewWeatherData || forced {
             updatedForecastIDs = []
             var cityListWeatherFetched = cityList.count == 1
             var cityListWeather: [Int: CityWeatherData] = [:]
