@@ -68,7 +68,7 @@ final class CitySelectionViewController: BaseViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
 
         let citySearchViewController = CitySearchViewController()
-        citySearchViewController.viewModel = CitySearchViewModel(cityListProvider: CityListProviderImpl.shared)
+        citySearchViewController.viewModel = CitySearchViewModel()
         citySearchViewController.delegate = self
         let searchController = UISearchController(searchResultsController: citySearchViewController)
         searchController.searchResultsUpdater = citySearchViewController
@@ -216,12 +216,16 @@ final class CitySelectionViewController: BaseViewController {
 
     private func setupDataToPresentedViewController() {
         DispatchQueue.main.async { [self] in
-            if let weatherData = sections.first?.items,
-               let presentedCityWeatherController = presentedViewController as? CityWeatherViewController,
+            if let presentedCityWeatherController = presentedViewController as? CityWeatherViewController,
+               let weatherData = sections.first?.items,
                let data = weatherData.first(where: { $0.id == presentedCityWeatherController.cityID }) {
 
-                   presentedCityWeatherController.viewModel.setup(data)
-               }
+                if data.dayHourlyData == nil {
+                    viewModel?.getForecastForCity(with: data.id)
+                } else {
+                    presentedCityWeatherController.viewModel.setup(data)
+                }
+            }
         }
     }
 
@@ -270,9 +274,10 @@ extension CitySelectionViewController: CitySelectionViewModelOutput {}
 
 // MARK: - CitySearchViewControllerDelegate
 extension CitySelectionViewController: CitySearchViewControllerDelegate {
-    func reloadData() {
+    func add(_ city: CityData) {
         navigationItem.searchController?.searchBar.text = nil
-        viewModel?.getWeatherForCityList(forced: true)
+        viewModel?.getWeather(for: city)
+//        viewModel?.getWeatherForCityList(forced: true)
     }
 }
 
