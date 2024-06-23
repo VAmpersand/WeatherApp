@@ -48,33 +48,6 @@ final class WeatherProviderImpl: WeatherProvider {
         return weatherDataCache.isEmpty || nextUploadDate < Date()
     }
 
-//    func getWeatherForCurrentLocation(forced: Bool,
-//                                      completionHandler: @escaping (CityWeatherData) -> Void,
-//                                      errorHandler: ((AppError) -> Void)?) {
-//        if isNeedUploadNewWeatherData || forced {
-//            weatherIsLoading = true
-//            updatedForecastIDs = []
-//
-//            if let currentPlace = cityList.first(where: { $0.id == .currentPlaceID }) {
-//                getWeatherForCity(
-//                    currentPlace,
-//                    completionHandler: { data in
-//                        cityListWeather[.currentPlaceID] = data
-//
-//                        completionHandler(data)
-//                    },
-//                    errorHandler: { [weak self] error in
-//                        errorHandler?(error)
-//
-//                        self?.weatherIsLoading = false
-//                    }
-//                )
-//            }
-//        } else {
-//            delegate?.setCurrentWeather(weatherDataCache)
-    //        }
-    //    }
-
     func getWeather(for cityList: [CityData],
                     forced: Bool,
                     completionHandler: @escaping ([Int: CityWeatherData]) -> Void,
@@ -128,7 +101,6 @@ final class WeatherProviderImpl: WeatherProvider {
             }
         } else {
             completionHandler(weatherDataCache)
-//            delegate?.setCurrentWeather(weatherDataCache)
         }
 
         func succeedCompletion(_ cityListWeather: [Int: CityWeatherData]) {
