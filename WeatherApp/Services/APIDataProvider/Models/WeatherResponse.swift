@@ -74,8 +74,8 @@ extension WeatherResponse {
     }
 
     struct SystemData: Decodable {
-        let country: String
-        let timeZone: TimeZone
+        let country: String?
+        let timeZone: TimeZone?
         let sunriseDate: Date
         let sunsetDate: Date
 
@@ -88,7 +88,7 @@ extension WeatherResponse {
 
         init(from decoder: any Decoder) throws {
             let container: KeyedDecodingContainer<CodingKeys> = try decoder.container(keyedBy: CodingKeys.self)
-            self.country = try container.decode(String.self, forKey: .country)
+            self.country = try container.decodeIfPresent(String.self, forKey: .country)
 
             let sunriseUnix = try container.decode(Double.self, forKey: .sunriseUnix)
             self.sunriseDate = Date(timeIntervalSince1970: sunriseUnix)

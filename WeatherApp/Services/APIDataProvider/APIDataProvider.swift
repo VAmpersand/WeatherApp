@@ -47,7 +47,7 @@ final class APIDataProvider {
                 }
 
                 let decoder = JSONDecoder()
-                print("Data", String(data: data, encoding: .utf8)!)
+                print("Request URL", request.url!)
 
                 if (200...299) ~= statusCode {
                     do {

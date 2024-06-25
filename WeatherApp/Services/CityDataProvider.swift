@@ -5,10 +5,10 @@
 //  Created by Viktor Prikolota on 08.06.2024.
 //
 
-import Foundation
+import UIKit
 
 protocol CityDataProvider {
-    static var shared: CityDataProvider { get }
+    var delegate: CityDataProviderDelegate? { get set}
     var selectedCityList: [CityData] { get set }
 
     func add(_ city: CityData)
@@ -22,33 +22,49 @@ extension CityDataProvider {
     }
 }
 
-final class CityListProviderImpl: CityDataProvider {
-    static let shared: CityDataProvider = CityListProviderImpl()
+protocol CityDataProviderDelegate: AnyObject {
+    func locationFetched()
+}
 
+final class CityDataProviderImpl: CityDataProvider {
+    static let shared: CityDataProvider = CityDataProviderImpl()
+
+    private let locationProvider = LocationProvider()
     private let udStorageManager = UDStorageManager()
     private let cdStorageManager = CDStorageManager()
 
-    private var currentPlaceCoord = Coordinate(lat: -20.563568, lon: -50.578311)
+    private var currentLocation: Coordinate?
+
+    private var currentPlace: CityData? {
+        guard let currentLocation else { return nil }
+
+        return CityData(id: .currentPlaceID,
+                        name: "Current place",
+                        state: "",
+                        country: "",
+                        coordinate: currentLocation)
+    }
+
+    weak var delegate: CityDataProviderDelegate?
 
     var selectedCityList: [CityData] {
         get {
             let cityList: [CityData]? = udStorageManager.object(forKey: .selectedCityList)
-            return cityList ?? [currentPlace]
+
+            if let currentPlace {
+                return cityList ?? [currentPlace]
+            } else {
+                return cityList ?? []
+            }
         }
         set {
             udStorageManager.set(object: newValue, fotKey: .selectedCityList)
         }
     }
 
-    var currentPlace: CityData {
-        CityData(id: .currentPlaceID,
-                 name: "Current place",
-                 state: "",
-                 country: "",
-                 coordinate: currentPlaceCoord)
-    }
-
     private init() {
+        locationProvider.delegate = self
+
         if udStorageManager.object(forKey: .cityListStored) != true {
             guard let path = Bundle.main.path(forResource: "city_list", ofType: "json"),
                   let data = FileManager.default.contents(atPath: path) else {
@@ -85,6 +101,19 @@ final class CityListProviderImpl: CityDataProvider {
             cdStorageManager.fetchCityData(completion: completion)
         }
     }
+}
+
+// MARK: - LocationProviderDelegate
+extension CityDataProviderImpl: LocationProviderDelegate {
+    func setCurrentLocation(_ location: Coordinate?) {
+        currentLocation = location
+        
+        if location != nil {
+            delegate?.locationFetched()
+        }
+    }
+
+    func showAlert(_ alertController: UIAlertController) {}
 }
 
 extension Int {
