@@ -16,7 +16,9 @@ final class TitleView: BaseView {
     private let tempLabel = UILabel()
     private let descriptionLable = UILabel()
     private let tempLimitsLabel = UILabel()
-    
+
+    private let verticalOffset: CGFloat = 50
+
     // MARK: Lifecycle
     override func setup() {
         super.setup()
@@ -37,7 +39,10 @@ final class TitleView: BaseView {
         stackView.distribution = .fillProportionally
         
         stackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.equalToSuperview().inset(verticalOffset)
+            make.horizontalEdges.equalToSuperview().inset(20)
+            make.bottom.equalToSuperview().inset(verticalOffset)
+            make.height.equalTo(300)
         }
     }
     
@@ -46,6 +51,10 @@ final class TitleView: BaseView {
         titleLabel.font = UIFont.systemFont(ofSize: 32, weight: .semibold)
         titleLabel.textAlignment = .center
         titleLabel.textColor = .white
+
+        titleLabel.snp.makeConstraints { make in
+            make.height.equalTo(30)
+        }
     }
     
     private func setupSubitleLabel() {
@@ -67,7 +76,6 @@ final class TitleView: BaseView {
         descriptionLable.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         descriptionLable.textAlignment = .center
         descriptionLable.textColor = .white
-        descriptionLable.numberOfLines = 2
     }
     
     private func setupTempLimitsLabel() {
@@ -88,5 +96,47 @@ final class TitleView: BaseView {
         if let maxTemp = model.maxTemp, let minTemp = model.minTemp {
             tempLimitsLabel.text = "Max: \(maxTemp.formatedTemp()), min: \(minTemp.formatedTemp())"
         }
+    }
+
+    func update(with offset: CGFloat) {
+
+//        UIView.animate(withDuration: 0.15) { [self] in
+//            stackView.snp.updateConstraints { make in
+//                make.top.equalToSuperview().inset(verticalOffset)
+//                make.bottom.equalToSuperview().inset(verticalOffset)
+//            }
+
+        let insetValue = verticalOffset - offset / 2
+
+        stackView.snp.updateConstraints { make in
+            make.top.equalToSuperview().inset(insetValue > 0 ? insetValue : 0)
+            make.height.equalTo(300 - offset / 2)
+            make.bottom.equalToSuperview().inset(insetValue > 0 ? insetValue : 0)
+        }
+
+//        print("_123", offset)
+        switch offset {
+        case 0..<40:
+//            let animatedOffset: CGFloat = 40
+            let insetValue = verticalOffset - offset
+//            print("_123", offset, insetValue)
+
+//            DispatchQueue.main.async {
+//
+//                self.stackView.snp.updateConstraints { make in
+//                    make.top.equalToSuperview().inset(insetValue)
+////                    make.horizontalEdges.equalToSuperview().inset(20)
+//                    make.bottom.equalToSuperview().inset(insetValue)
+//                }
+//            }
+            //            layoutIfNeeded()
+
+
+            //                self.tempLimitsLabel.isHidden = true
+        case 60..<100: break
+            //                self.tempLabel.isHidden = true
+        default: break
+        }
+        //        }
     }
 }

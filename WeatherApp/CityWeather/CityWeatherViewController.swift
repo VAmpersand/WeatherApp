@@ -14,13 +14,16 @@ final class CityWeatherViewController: BaseViewController {
 
     // MARK: Properties
     private let backgroundImage = UIImageView()
-    private let titleContainer = UIView()
     private let titleView = TitleView()
     private var collectionView: UICollectionView!
     private let bottomBarView = BottomBarView()
 
     private var dataSource: UICollectionViewDiffableDataSource<Section, Item>?
     private var snapshot: NSDiffableDataSourceSnapshot<Section, Item>! = nil
+
+    private var prevOffset: CGFloat = 0
+    private var totalScroll: CGFloat = 0
+    private var isScrollEnable = false
 
     var viewModel: CityWeatherViewModelInput!
     var sections: [Section] = [] {
@@ -41,7 +44,6 @@ final class CityWeatherViewController: BaseViewController {
         viewModel.viewDidLoad()
 
         setupBackgroundImage()
-        setupTitleContainer()
         setupTitleView()
         setupCollectionView()
         setupBottomBarView()
@@ -61,22 +63,12 @@ final class CityWeatherViewController: BaseViewController {
         }
     }
 
-    private func setupTitleContainer() {
-        view.addSubview(titleContainer)
-
-        titleContainer.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
-            make.horizontalEdges.equalToSuperview()
-            make.height.equalTo(titleContainer.snp.width).multipliedBy(0.65)
-        }
-    }
-
     private func setupTitleView() {
-        titleContainer.addSubview(titleView)
+        view.addSubview(titleView)
 
         titleView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.horizontalEdges.equalToSuperview().inset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.horizontalEdges.equalToSuperview()
         }
     }
 
@@ -94,7 +86,7 @@ final class CityWeatherViewController: BaseViewController {
         collectionView.registerCell(DayWeatherCell.self)
 
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(titleContainer.snp.bottom)
+            make.top.equalTo(titleView.snp.bottom)
             make.horizontalEdges.equalToSuperview().inset(16)
         }
     }
@@ -290,5 +282,29 @@ extension CityWeatherViewController: CityWeatherViewModelOutput {
 
     func reloadData() {
         reloadDataSource()
+    }
+}
+
+// MARK: - UIScrollViewDelegate
+extension CityWeatherViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let deltaOffset = scrollView.contentOffset.y - prevOffset
+
+        if deltaOffset < 0 && scrollView.contentOffset.y < 0 {
+            isScrollEnable = false
+        }
+
+        if isScrollEnable {
+            totalScroll += deltaOffset
+            prevOffset = scrollView.contentOffset.y
+        } else {
+            totalScroll += scrollView.contentOffset.y
+
+            scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+            titleView.update(with: totalScroll)
+        }
+
+        totalScroll = totalScroll < 0 ? 0 : totalScroll
+        isScrollEnable = totalScroll >= 200
     }
 }
